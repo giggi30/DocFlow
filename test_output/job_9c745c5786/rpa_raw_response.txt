@@ -1,0 +1,223 @@
+=== content ===
+{
+  "autofattura": {
+    "numero_articolo": "1",
+    "regime": "N/D",
+    "cod_svincolo": "N/D",
+    "data_svincolo": "25/02/2026",
+    "num_a93": "N/D",
+    "anno_a93": "N/D",
+    "data_rilascio": "N/D",
+    "num_quietanza": "N/D",
+    "data_quietanza": "N/D",
+    "codice_merce": "8542319000",
+    "massa_lordo": "N/D",
+    "massa_netta": "N/D",
+    "unita_supplementare": "N/D",
+    "regimi_aggiuntivi": "N/D",
+    "container": "N/D",
+    "descrizione_merce": "PROCESSORI",
+    "preferenze": "N/D",
+    "contingente": "N/D",
+    "paese_sped": "N/D",
+    "paese_dest": "N/D",
+    "prov_dest": "N/D",
+    "paese_orig": "N/D",
+    "paese_orig_pref": "N/D",
+    "natura_transaz": "N/D",
+    "prezzo_art": "N/D",
+    "valore_stat": "N/D",
+    "aggiunte_detrazioni": [
+      {
+        "codice": "N/D",
+        "descrizione": "N/D",
+        "importo": "N/D"
+      }
+    ],
+    "tributi": [
+      {
+        "tributo": "A00",
+        "imponibile": "26.200,00",
+        "quantita": "N/D",
+        "unita_misura": "N/D",
+        "aliquota": "2,10%",
+        "importo": "550,20",
+        "metodo_pag": "N/D"
+      },
+      {
+        "tributo": "620",
+        "imponibile": "26.200,00",
+        "quantita": "N/D",
+        "unita_misura": "N/D",
+        "aliquota": "2,00%",
+        "importo": "524,00",
+        "metodo_pag": "N/D"
+      },
+      {
+        "tributo": "IVA22",
+        "imponibile": "27.274,20",
+        "quantita": "N/D",
+        "unita_misura": "N/D",
+        "aliquota": "22%",
+        "importo": "6.000,32",
+        "metodo_pag": "N/D"
+      }
+    ],
+    "scarichi": [
+      {
+        "tipo": "N/D",
+        "riferimento": "N/D",
+        "art": "N/D",
+        "num_imb": "N/D",
+        "quantita": "N/D",
+        "unita": "N/D"
+      }
+    ],
+    "documenti": [
+      {
+        "codice": "N/D",
+        "identificativo": "N/D",
+        "data": "N/D",
+        "uni_mis": "N/D",
+        "quantita": "N/D",
+        "codice_valuta": "N/D",
+        "importo": "N/D"
+      }
+    ],
+    "tipo_imb": "N/D",
+    "numero_imb": "N/D",
+    "marchi_spedizione": "N/D"
+  },
+  "autodichiarazione": [
+    "TECH NODE SOLUTIONS S.R.L",
+    "Da compilare",
+    "Da compilare",
+    "Da compilare",
+    "PROCESSORI",
+    "Da compilare",
+    "25.000,00",
+    "APEX SHENZEN LTD.",
+    "TECH NODE SOLUTIONS S.R.L",
+    "ROMA FIUMICINO",
+    "ROMA",
+    "ROMA FIUMICINO",
+    "20/02/2026",
+    "Da compilare",
+    "TECH NODE SOLUTIONS S.R.L"
+  ]
+}
+
+=== additional_kwargs ===
+{'refusal': None}
+
+=== response_metadata ===
+{'token_usage': {'completion_tokens': 8418, 'prompt_tokens': 2801, 'total_tokens': 11219, 'completion_tokens_details': {'accepted_prediction_tokens': None, 'audio_tokens': 0, 'reasoning_tokens': 7386, 'rejected_prediction_tokens': None, 'image_tokens': 0}, 'prompt_tokens_details': {'audio_tokens': 0, 'cached_tokens': 0, 'cache_write_tokens': 0, 'video_tokens': 0}, 'cost': 0.017325425, 'is_byok': False, 'cost_details': {'upstream_inference_cost': 0.017325425, 'upstream_inference_prompt_cost': 0.000910325, 'upstream_inference_completions_cost': 0.0164151}}, 'model_provider': 'openai', 'model_name': 'qwen/qwen3.6-plus-04-02', 'system_fingerprint': None, 'id': 'gen-1777802810-J3FUQG1zaGQQDrdvxGfK', 'finish_reason': 'stop', 'logprobs': None}
+
+=== resolved llm_content ===
+{
+  "autofattura": {
+    "numero_articolo": "1",
+    "regime": "N/D",
+    "cod_svincolo": "N/D",
+    "data_svincolo": "25/02/2026",
+    "num_a93": "N/D",
+    "anno_a93": "N/D",
+    "data_rilascio": "N/D",
+    "num_quietanza": "N/D",
+    "data_quietanza": "N/D",
+    "codice_merce": "8542319000",
+    "massa_lordo": "N/D",
+    "massa_netta": "N/D",
+    "unita_supplementare": "N/D",
+    "regimi_aggiuntivi": "N/D",
+    "container": "N/D",
+    "descrizione_merce": "PROCESSORI",
+    "preferenze": "N/D",
+    "contingente": "N/D",
+    "paese_sped": "N/D",
+    "paese_dest": "N/D",
+    "prov_dest": "N/D",
+    "paese_orig": "N/D",
+    "paese_orig_pref": "N/D",
+    "natura_transaz": "N/D",
+    "prezzo_art": "N/D",
+    "valore_stat": "N/D",
+    "aggiunte_detrazioni": [
+      {
+        "codice": "N/D",
+        "descrizione": "N/D",
+        "importo": "N/D"
+      }
+    ],
+    "tributi": [
+      {
+        "tributo": "A00",
+        "imponibile": "26.200,00",
+        "quantita": "N/D",
+        "unita_misura": "N/D",
+        "aliquota": "2,10%",
+        "importo": "550,20",
+        "metodo_pag": "N/D"
+      },
+      {
+        "tributo": "620",
+        "imponibile": "26.200,00",
+        "quantita": "N/D",
+        "unita_misura": "N/D",
+        "aliquota": "2,00%",
+        "importo": "524,00",
+        "metodo_pag": "N/D"
+      },
+      {
+        "tributo": "IVA22",
+        "imponibile": "27.274,20",
+        "quantita": "N/D",
+        "unita_misura": "N/D",
+        "aliquota": "22%",
+        "importo": "6.000,32",
+        "metodo_pag": "N/D"
+      }
+    ],
+    "scarichi": [
+      {
+        "tipo": "N/D",
+        "riferimento": "N/D",
+        "art": "N/D",
+        "num_imb": "N/D",
+        "quantita": "N/D",
+        "unita": "N/D"
+      }
+    ],
+    "documenti": [
+      {
+        "codice": "N/D",
+        "identificativo": "N/D",
+        "data": "N/D",
+        "uni_mis": "N/D",
+        "quantita": "N/D",
+        "codice_valuta": "N/D",
+        "importo": "N/D"
+      }
+    ],
+    "tipo_imb": "N/D",
+    "numero_imb": "N/D",
+    "marchi_spedizione": "N/D"
+  },
+  "autodichiarazione": [
+    "TECH NODE SOLUTIONS S.R.L",
+    "Da compilare",
+    "Da compilare",
+    "Da compilare",
+    "PROCESSORI",
+    "Da compilare",
+    "25.000,00",
+    "APEX SHENZEN LTD.",
+    "TECH NODE SOLUTIONS S.R.L",
+    "ROMA FIUMICINO",
+    "ROMA",
+    "ROMA FIUMICINO",
+    "20/02/2026",
+    "Da compilare",
+    "TECH NODE SOLUTIONS S.R.L"
+  ]
+}

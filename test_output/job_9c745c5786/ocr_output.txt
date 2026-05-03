@@ -1,0 +1,83 @@
+🧾 DATI GENERALI
+
+- Identificativi Dichiarazione
+- MRN: 26ITRV00009876543 ver. 2
+- Ufficio: DOGANA DI ROMA FIUMICINO
+- Data dichiarazione: 20/02/2026
+- Data accettazione: 20/02/2026
+- Data svincolo: 25/02/2026
+- Lettera di intento numero: 2
+
+- Soggetti
+- Importatore: TECH NODE SOLUTIONS S.R.L (CF: 11223344556)
+- Rappresentante: LOGISTICA INT. S.P.A.
+- Rappresentante fiscale: LUIGI S.R.L (CF: 09876543210)
+- Fornitore: APEX SHENZEN LTD.
+
+- Dati Commerciali
+- Fattura: FT/2026/99 del 15/02/2026
+- Importo totale fatturato: EUR 25.000,00
+- Condizioni di consegna: CIF - ROMA FIUMICINO (FCO)
+- Tasso di cambio: 1,0850 (EUR/USD)
+- Totale articoli: 3
+
+📦 DETTAGLIO MERCI E VALORI
+
+- Elenco merci
+- Articolo 1: PROCESSORI (Codice NC: 8542319000)
+- Articolo 2: SSD (Codice NC: 8471705000)
+- Articolo 3: CAVI (Codice NC: 8544429000)
+
+- Valori
+- Valore doganale (base dazi): EUR 26.200,00
+- Note: Presente indicazione "Sono presenti articoli non svincolati"
+
+💶 ESTRAZIONE DELLE RIGHE TRIBUTARIE
+
+- Liquidazione Dazi
+- Codice tributo: A00
+- Imponibile: EUR 26.200,00
+- Aliquota: 2,10%
+- Importo calcolato: EUR 550,20
+- Totale dazi: EUR 550,20
+
+- Liquidazione Tributi Nazionali
+- Codice tributo: 620
+- Imponibile: EUR 26.200,00
+- Aliquota: 2,00%
+- Importo calcolato: EUR 524,00
+- Totale tributi: EUR 524,00
+
+- Liquidazione IVA
+- Codice tributo: IVA22
+- Imponibile: EUR 27.274,20
+- Aliquota: 22%
+- Importo calcolato: EUR 6.000,32
+- Totale IVA: EUR 6.000,32
+
+🧮 VERIFICA CONTABILE E FISCALE
+
+- Coerenza valore doganale
+- Il valore doganale (EUR 26.200,00) risulta superiore al valore fatturato (EUR 25.000,00) di EUR 1.200,00. La differenza è compatibile con i costi di trasporto e assicurazione inclusi nei termini CIF. Coerente.
+
+- Verifica aritmetica Dazi (A00)
+- Calcolo: 26.200,00 × 2,10% = 550,20. Corretto.
+
+- Verifica aritmetica Tributi Nazionali (620)
+- Calcolo: 26.200,00 × 2,00% = 524,00. Corretto.
+
+- Verifica base imponibile IVA
+- Calcolo atteso: Valore doganale + Dazi + Tributi nazionali
+- 26.200,00 + 550,20 + 524,00 = 27.274,20. Corretto.
+
+- Verifica aritmetica IVA
+- Calcolo: 27.274,20 × 22% = 6.000,324 → arrotondato a 6.000,32. Corretto (arrotondamento matematico alla seconda cifra decimale).
+
+- Totali
+- Totale dazi: EUR 550,20 (coerente con riga A00)
+- Totale tributi: EUR 524,00 (coerente con riga 620)
+- Totale IVA: EUR 6.000,32 (coerente con riga IVA22)
+
+✅ ESITO FINALE
+
+- Documento contabilmente corretto. Tutti i calcoli tributari sono aritmeticamente esatti e logicamente coerenti tra loro. La base imponibile IVA è correttamente determinata includendo il valore doganale, i dazi doganali e i tributi nazionali. Nessuna discrepanza rilevata.
