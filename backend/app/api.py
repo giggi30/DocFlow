@@ -139,6 +139,14 @@ def _is_visible_document(path: Path) -> bool:
   return path.name not in HIDDEN_DOCUMENT_NAMES
 
 
+def _document_timestamp(path: Path) -> float:
+  stat = path.stat()
+  created_at = getattr(stat, "st_birthtime", None)
+  if created_at is not None and created_at > 0:
+    return created_at
+  return stat.st_mtime
+
+
 def _preview_url(job_id: str, path: Path, doc_type: str) -> str | None:
   download_url = f"/documents/{job_id}/{path.name}"
   if doc_type in {"pdf", "text", "image"}:
@@ -743,13 +751,14 @@ def list_documents() -> list[DocumentItem]:
       doc_type, mime = _detect_type(path)
       download_url = f"/documents/{job_id}/{path.name}"
       preview_url = _preview_url(job_id, path, doc_type)
+      created_at = _document_timestamp(path)
       items.append(
         DocumentItem(
           id=f"{job_id}-{path.stem}",
           name=path.name,
           type=doc_type,
           mimeType=mime,
-          date=time.strftime("%Y-%m-%d"),
+          date=time.strftime("%Y-%m-%d %H:%M", time.localtime(created_at)),
           source="job",
           jobId=job_id,
           previewUrl=preview_url,

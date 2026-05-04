@@ -155,7 +155,7 @@ export default function ArchivePage() {
               <div className="archive-row archive-row--head" role="row">
                 <span role="columnheader">Nome</span>
                 <span role="columnheader">Tipo</span>
-                <span role="columnheader">Data</span>
+                <span role="columnheader">Data e ora</span>
               </div>
               {filteredDocuments.length === 0 ? (
                 <div className="archive-empty archive-empty--compact">
@@ -183,7 +183,7 @@ export default function ArchivePage() {
                     <span data-label="Tipo" role="cell">
                       {document.type}
                     </span>
-                    <span data-label="Data" role="cell">
+                    <span data-label="Data e ora" role="cell">
                       {document.date}
                     </span>
                   </button>
@@ -205,7 +205,7 @@ export default function ArchivePage() {
                       <dd>{selectedDocument.type}</dd>
                     </div>
                     <div>
-                      <dt>Data</dt>
+                      <dt>Data e ora</dt>
                       <dd>{selectedDocument.date}</dd>
                     </div>
                   </dl>
