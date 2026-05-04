@@ -1,13 +1,15 @@
 import { NavLink } from 'react-router-dom'
+import appLogo from '../assets/icon.png'
 
 export default function Sidebar() {
   return (
     <aside className="app-sidebar">
       <div className="app-brand">
-        <div className="app-logo">DF</div>
+        <div className="app-logo">
+          <img className="app-logo__image" src={appLogo} alt="DocFlow" />
+        </div>
         <div>
           <div className="app-name">DocFlow</div>
-          <div className="app-tagline">Bolle doganali</div>
         </div>
       </div>
       <nav className="app-nav">
@@ -30,7 +32,7 @@ export default function Sidebar() {
         </NavLink>
       </nav>
       <div className="app-sidebar__footer">
-        <span className="muted">v0.1</span>
+        <span className="muted">V1.0.1</span>
       </div>
     </aside>
   )
