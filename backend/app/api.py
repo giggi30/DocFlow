@@ -111,6 +111,14 @@ def _safe_filename(name: str) -> str:
   return Path(name).name
 
 
+def _original_upload_name(file_id: str, file_path: Path) -> str:
+  prefixed_name = file_path.name
+  prefix = f"{file_id}_"
+  if prefixed_name.startswith(prefix):
+    return prefixed_name[len(prefix):]
+  return prefixed_name
+
+
 def _resolve_path(path_str: str) -> Path:
   path = Path(path_str)
   if path.is_absolute():
@@ -613,6 +621,7 @@ def _run_job(job_id: str) -> None:
     initial_state = {
       "task": DEFAULT_TASK,
       "raw_document_path": str(job.file_path),
+      "source_document_name": _original_upload_name(job.file_id, job.file_path),
       "job_id": job_id,
       "output_dir": str(job.output_dir),
       "messages": [HumanMessage(content=DEFAULT_TASK)],

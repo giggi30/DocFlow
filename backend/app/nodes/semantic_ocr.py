@@ -32,13 +32,48 @@ SECTION_EMOJIS = {
     "DETTAGLIO MERCI E VALORI": "📦",
     "ESTRAZIONE DELLE RIGHE TRIBUTARIE": "💶",
     "VERIFICA CONTABILE E FISCALE": "🧮",
-    "ESITO FINALE": "✅",
 }
+
+
+REVIEW_WARNING_PATTERNS = (
+    r"\bdiscrepanz",
+    r"\bincongruen",
+    r"\bincoeren",
+    r"\banomali",
+    r"\berror",
+    r"\bdifferenz",
+    r"\bscostament",
+    r"\bmancant",
+    r"\bassent",
+    r"\bnon\s+(coincide|corrisponde|risulta|torn)",
+    r"\bda\s+(verificare|rivedere|revisionare)",
+    r"\brichiede\s+(verifica|revisione)",
+    r"\bimpossibile\s+verificare",
+)
+
+REASSURING_PATTERNS = (
+    r"\bnessun[ao]?\s+discrepanz",
+    r"\bsenza\s+discrepanz",
+    r"\bnon\s+(sono\s+state\s+)?rilevat[ei]\s+discrepanz",
+    r"\bnon\s+emergono\s+discrepanz",
+    r"\bdati\s+coerenti",
+    r"\bcalcoli\s+coerenti",
+)
+
+
+def _requires_human_review(text: str) -> bool:
+    for line in text.splitlines():
+        clean = line.lower()
+        if any(re.search(pattern, clean) for pattern in REVIEW_WARNING_PATTERNS):
+            if not any(re.search(pattern, clean) for pattern in REASSURING_PATTERNS):
+                return True
+    return False
 
 
 def _format_ocr_output(text: str) -> str:
     lines = text.splitlines()
     formatted: list[str] = []
+    esito_icon = "⚠️" if _requires_human_review(text) else "✅"
 
     for line in lines:
         raw_line = line
@@ -50,6 +85,10 @@ def _format_ocr_output(text: str) -> str:
         clean = stripped.replace("*", "")
         clean = re.sub(r"\s+", " ", clean).strip()
         clean = re.sub(r"^[\-–•]+\s*", "", clean)
+
+        if clean == "ESITO FINALE":
+            formatted.append(f"{esito_icon} {clean}")
+            continue
 
         if clean in SECTION_EMOJIS:
             formatted.append(f"{SECTION_EMOJIS[clean]} {clean}")

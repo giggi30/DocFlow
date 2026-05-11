@@ -35,6 +35,7 @@ def main() -> None:
 	initial_state = {
 		"task": args.task, 
 		"raw_document_path": "allegati/Allegato1_Gemini.pdf",
+		"source_document_name": "Allegato1_Gemini.pdf",
 		"messages": [HumanMessage(content=args.task)]
 	}
 

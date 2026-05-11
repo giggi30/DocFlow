@@ -19,7 +19,7 @@ verify the accounting and tax consistency of the declared amounts,
 highlight any discrepancy, inconsistency, or missing logical link among values, tax bases, rates, and totals.
 Transcribe only the filled and relevant fields. Ignore blank, unreadable, or clearly irrelevant fields. If a field appears important but is not clearly readable, mark it as “non leggibile / da confermare”. Do not infer missing values unless they can be derived mathematically from explicit values shown in the document.
 For each fiscal line, identify base, rate, amount, and check mathematical correctness and consistency with upstream values. Verify, where applicable, customs/statistical value, duty calculations, VAT taxable base, VAT amount, and final total.
-Flag any discrepancy, including €0.01 differences, distinguishing between calculation errors, possible rounding issues, missing information, and logical inconsistencies. Produce the entire output in Italian, using only structured text with section titles and bullet points. Do not use JSON or code. Organize the response into: DATI GENERALI, DETTAGLIO MERCI E VALORI, ESTRAZIONE DELLE RIGHE TRIBUTARIE, VERIFICA CONTABILE E FISCALE, ESITO FINALE.
+Flag any discrepancy, including €0.01 differences, distinguishing between calculation errors, possible rounding issues, missing information, and logical inconsistencies, if the discrepancy is significant put it in the ESITO FINALE for human review, meanwhile if the discrepancy is minor (like freight and insurance costs that fall within the CIF terms), report it in the VERIFICA CONTABILE E FISCALE section and leave ESITO FINALE clean. Produce the entire output in Italian, using only structured text with section titles and bullet points. Do not use JSON or code. Organize the response into: DATI GENERALI, DETTAGLIO MERCI E VALORI, ESTRAZIONE DELLE RIGHE TRIBUTARIE, VERIFICA CONTABILE E FISCALE, ESITO FINALE.
 Do not duplicate the same checks in multiple sections. The ESTRAZIONE DELLE RIGHE TRIBUTARIE section should only report the data. The VERIFICA CONTABILE E FISCALE section should only indicate whether the data is consistent. The ESITO FINALE section should be brief and not repeat details already reported.
 """
 
@@ -45,11 +45,15 @@ RPA_PROMPT = """You are the RPA Document Generation Agent. Your task is to read 
 - Carefully analyze the provided OCR output. Extract ONLY data that is actually present in the text; if a field is not available use "N/D" (for the autofattura) or "Da compilare" (for the autodichiarazione).
 - For the autofattura tax lines, create an array with one object per tax line (A00, 620, IVA22, etc.).
 - All monetary amounts must be strings using the comma as decimal separator (e.g. "26.200,00").
+- You will also receive the SOURCE PDF FILENAME. Infer the company name for output file naming only from that filename: remove generic customs-document prefixes such as "bolla_doganale", "dichiarazione_doganale", "customs_declaration", remove the ".pdf" extension, lowercase the result, normalize legal suffixes such as "s.r.l." to "srl", and use underscores between words.
+- If the company name is written as a run-on token, split it into meaningful company-name words when obvious. Example: "bolla_doganale_technodesolutions_srl.pdf" must produce "technode_solutions_srl".
+- The "source_pdf_company_slug" value must contain only lowercase letters, numbers, and underscores. Do not include "autofattura", "autodichiarazione", "bolla", "doganale", or the file extension in this value.
 
 ## OUTPUT FORMAT
 Respond EXCLUSIVELY with valid JSON (no markdown fences, no comments) using this exact structure:
 
 {
+  "source_pdf_company_slug": "azienda_srl",
   "autofattura": {
     "numero_articolo": "1",
     "regime": "",

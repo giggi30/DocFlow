@@ -17,6 +17,7 @@ class AgentState(TypedDict, total=False):
     
     # Document state
     raw_document_path: str
+    source_document_name: str
     extracted_data: str
     validation_logs: str
     

@@ -7,12 +7,14 @@ import os
 import re
 import time
 from copy import copy
+from pathlib import Path
 from typing import Literal
 
 from openpyxl.worksheet.cell_range import CellRange
 
 import openpyxl
 from docx import Document as DocxDocument
+from docx.shared import RGBColor
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langgraph.types import Command
 
@@ -33,6 +35,32 @@ DEFAULT_OUTPUT_DIR = "test_output"
 DEFAULT_OCR_OUTPUT_PATH = os.path.join(DEFAULT_OUTPUT_DIR, "ocr_output.txt")
 AUTOFATTURA_TEMPLATE = "allegati/autofattura.xlsx"
 AUTODICHIARAZIONE_TEMPLATE = "allegati/autodichiarazione_riordinata.docx"
+
+GENERIC_SOURCE_NAME_TOKENS = {
+    "bolla",
+    "bolle",
+    "doganale",
+    "doganali",
+    "dichiarazione",
+    "customs",
+    "declaration",
+    "documento",
+    "document",
+}
+
+RUN_ON_COMPANY_SUFFIXES = (
+    "solutions",
+    "solution",
+    "technologies",
+    "technology",
+    "logistics",
+    "logistica",
+    "trading",
+    "systems",
+    "system",
+    "services",
+    "service",
+)
 
 
 # ---------------------------------------------------------------------------
@@ -56,6 +84,69 @@ def _extract_json(text: str) -> dict:
     if match:
         return json.loads(match.group(0))
     raise ValueError(f"Impossibile estrarre JSON dalla risposta LLM:\n{text[:500]}")
+
+
+def _collapse_legal_form_tokens(tokens: list[str]) -> list[str]:
+    collapsed: list[str] = []
+    index = 0
+    while index < len(tokens):
+        triplet = tokens[index:index + 3]
+        if triplet == ["s", "r", "l"]:
+            collapsed.append("srl")
+            index += 3
+            continue
+        if triplet == ["s", "p", "a"]:
+            collapsed.append("spa")
+            index += 3
+            continue
+        collapsed.append(tokens[index])
+        index += 1
+    return collapsed
+
+
+def _split_run_on_company_token(token: str) -> list[str]:
+    for suffix in RUN_ON_COMPANY_SUFFIXES:
+        if token.endswith(suffix) and len(token) > len(suffix) + 2:
+            return [token[:-len(suffix)], suffix]
+    return [token]
+
+
+def _sanitize_company_slug(value: str, remove_source_prefixes: bool = False) -> str:
+    stem = Path(value).stem.lower()
+    normalized = re.sub(r"[^a-z0-9]+", "_", stem)
+    tokens = [token for token in normalized.split("_") if token]
+    tokens = _collapse_legal_form_tokens(tokens)
+
+    if remove_source_prefixes:
+        while tokens and tokens[0] in GENERIC_SOURCE_NAME_TOKENS:
+            tokens.pop(0)
+
+    company_tokens: list[str] = []
+    for token in tokens:
+        if token in {"pdf", "autofattura", "autodichiarazione"}:
+            continue
+        company_tokens.extend(_split_run_on_company_token(token))
+
+    return "_".join(company_tokens) or "azienda_srl"
+
+
+def _source_pdf_name_from_state(state: AgentState) -> str:
+    source_name = state.get("source_document_name", "")
+    if source_name:
+        return Path(source_name).name
+
+    raw_path = Path(state.get("raw_document_path", ""))
+    raw_name = raw_path.name
+    return re.sub(r"^file_[0-9a-f]{10}_", "", raw_name)
+
+
+def _company_slug_from_mapping(mapping: dict, source_pdf_name: str) -> str:
+    llm_slug = str(mapping.get("source_pdf_company_slug", "") or "")
+    if llm_slug:
+        sanitized_slug = _sanitize_company_slug(llm_slug, remove_source_prefixes=True)
+        if sanitized_slug and sanitized_slug != "azienda_srl":
+            return sanitized_slug
+    return _sanitize_company_slug(source_pdf_name, remove_source_prefixes=True)
 
 
 def _safe_insert_rows(ws, row: int, count: int = 1) -> None:
@@ -289,6 +380,21 @@ def _fill_autodichiarazione(data: dict, template_path: str, output_path: str) ->
             
     val_idx = 0
 
+    def copy_run_style(source_run, target_run) -> None:
+        target_run.bold = source_run.bold
+        target_run.italic = source_run.italic
+        target_run.underline = source_run.underline
+        target_run.style = source_run.style
+        target_run.font.name = source_run.font.name
+        target_run.font.size = source_run.font.size
+
+    def style_missing_value(run) -> None:
+        run.font.color.rgb = RGBColor(0xB9, 0x1C, 0x1C)
+        run.underline = True
+
+    def is_missing_value(value: str) -> bool:
+        return value.strip().lower() == "da compilare"
+
     def replace_in_paragraph(paragraph) -> None:
         nonlocal val_idx
         text = paragraph.text
@@ -299,25 +405,39 @@ def _fill_autodichiarazione(data: dict, template_path: str, output_path: str) ->
         matches = list(re.finditer(r"_{3,}", text))
         if not matches:
             return
-            
-        def repl(match):
-            nonlocal val_idx
+
+        template_run = paragraph.runs[0] if paragraph.runs else None
+        for run in paragraph.runs:
+            run.text = ""
+
+        cursor = 0
+        for match in matches:
+            prefix = text[cursor:match.start()]
+            if prefix:
+                prefix_run = paragraph.add_run(prefix)
+                if template_run:
+                    copy_run_style(template_run, prefix_run)
+
             if val_idx < len(ad_values):
-                val = ad_values[val_idx]
+                raw_value = ad_values[val_idx]
                 val_idx += 1
-                return str(val) if val else ""
+                replacement = str(raw_value) if raw_value else ""
             else:
-                return match.group(0) # Keep original underscores if no more values
-                
-        new_text = re.sub(r"_{3,}", repl, text)
-        
-        # Rebuild runs preserving the first run's formatting
-        if paragraph.runs:
-            first_run = paragraph.runs[0]
-            # Clear all subsequent runs
-            for run in paragraph.runs[1:]:
-                run.text = ""
-            first_run.text = new_text
+                replacement = match.group(0) # Keep original underscores if no more values
+
+            replacement_run = paragraph.add_run(replacement)
+            if template_run:
+                copy_run_style(template_run, replacement_run)
+            if is_missing_value(replacement):
+                style_missing_value(replacement_run)
+
+            cursor = match.end()
+
+        suffix = text[cursor:]
+        if suffix:
+            suffix_run = paragraph.add_run(suffix)
+            if template_run:
+                copy_run_style(template_run, suffix_run)
 
     for paragraph in doc.paragraphs:
         replace_in_paragraph(paragraph)
@@ -404,6 +524,7 @@ def rpa_document_generation_node(state: AgentState) -> Command[Literal["tracking
 
     output_dir = state.get("output_dir", DEFAULT_OUTPUT_DIR)
     ocr_output_path = os.path.join(output_dir, "ocr_output.txt")
+    source_pdf_name = _source_pdf_name_from_state(state)
 
     # 1. Read OCR output
     ocr_text = ""
@@ -424,6 +545,7 @@ def rpa_document_generation_node(state: AgentState) -> Command[Literal["tracking
         HumanMessage(content=(
             "Below is the OCR analysis output of a customs declaration (bolla doganale). "
             "Analyze it and generate the structured JSON to fill the autofattura and autodichiarazione.\n\n"
+            f"--- SOURCE PDF FILENAME ---\n{source_pdf_name}\n--- END SOURCE PDF FILENAME ---\n\n"
             f"--- OCR OUTPUT ---\n{ocr_text}\n--- END OCR OUTPUT ---\n\n"
             f"--- TESTO TEMPLATE AUTODICHIARAZIONE ---\n{template_text}\n--- FINE TEMPLATE ---"
         ))
@@ -465,12 +587,14 @@ def rpa_document_generation_node(state: AgentState) -> Command[Literal["tracking
         with open(json_out, "w", encoding="utf-8") as f:
             json.dump(mapping, f, ensure_ascii=False, indent=2)
 
+        company_slug = _company_slug_from_mapping(mapping, source_pdf_name)
+
         # 5. Fill autofattura.xlsx
-        autofattura_out = os.path.join(output_dir, "autofattura_compilata.xlsx")
+        autofattura_out = os.path.join(output_dir, f"autofattura_{company_slug}.xlsx")
         _fill_autofattura(mapping, AUTOFATTURA_TEMPLATE, autofattura_out)
 
         # 6. Fill autodichiarazione_riordinata.docx
-        autodichiarazione_out = os.path.join(output_dir, "autodichiarazione_compilata.docx")
+        autodichiarazione_out = os.path.join(output_dir, f"autodichiarazione_{company_slug}.docx")
         _fill_autodichiarazione(mapping, AUTODICHIARAZIONE_TEMPLATE, autodichiarazione_out)
 
         documents = [autofattura_out, autodichiarazione_out]
@@ -499,4 +623,3 @@ def rpa_document_generation_node(state: AgentState) -> Command[Literal["tracking
         },
         goto="__end__",
     )
-

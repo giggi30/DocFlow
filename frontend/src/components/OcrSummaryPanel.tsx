@@ -7,6 +7,46 @@ type OcrSummaryPanelProps = {
   status: JobStatus | null
 }
 
+const reviewWarningPatterns = [
+  /\bdiscrepanz/i,
+  /\bincongruen/i,
+  /\bincoeren/i,
+  /\banomali/i,
+  /\berror/i,
+  /\bdifferenz/i,
+  /\bscostament/i,
+  /\bmancant/i,
+  /\bassent/i,
+  /\bnon\s+(coincide|corrisponde|risulta|torn)/i,
+  /\bda\s+(verificare|rivedere|revisionare)/i,
+  /\brichiede\s+(verifica|revisione)/i,
+  /\bimpossibile\s+verificare/i,
+]
+
+const reassuringPatterns = [
+  /\bnessun[ao]?\s+discrepanz/i,
+  /\bsenza\s+discrepanz/i,
+  /\bnon\s+(sono\s+state\s+)?rilevat[ei]\s+discrepanz/i,
+  /\bnon\s+emergono\s+discrepanz/i,
+  /\bdati\s+coerenti/i,
+  /\bcalcoli\s+coerenti/i,
+]
+
+function hasHumanReviewWarning(text: string) {
+  return text.split('\n').some((line) => {
+    const hasWarning = reviewWarningPatterns.some((pattern) => pattern.test(line))
+    const isReassuring = reassuringPatterns.some((pattern) => pattern.test(line))
+    return hasWarning && !isReassuring
+  })
+}
+
+function replaceFinalOutcomeIcon(text: string, hasWarning: boolean) {
+  if (!hasWarning) {
+    return text
+  }
+  return text.replace(/✅\s*ESITO FINALE/g, '⚠️ ESITO FINALE')
+}
+
 export default function OcrSummaryPanel({ jobId, status }: OcrSummaryPanelProps) {
   const [summary, setSummary] = useState<string>('')
   const [isLoading, setIsLoading] = useState(false)
@@ -102,12 +142,12 @@ export default function OcrSummaryPanel({ jobId, status }: OcrSummaryPanelProps)
   }, [jobId, status])
 
   const handleCopy = async () => {
-    const visibleSummary = jobId ? summary : ''
-    if (!visibleSummary) {
+    const copiedSummary = jobId ? displaySummary : ''
+    if (!copiedSummary) {
       return
     }
     try {
-      await navigator.clipboard.writeText(visibleSummary)
+      await navigator.clipboard.writeText(copiedSummary)
       setCopied(true)
       setCopyError(null)
     } catch {
@@ -119,40 +159,59 @@ export default function OcrSummaryPanel({ jobId, status }: OcrSummaryPanelProps)
   const visibleSummary = jobId ? summary : ''
   const visibleLoading = Boolean(jobId) && isLoading && !hasFetched
   const visibleError = jobId ? error : null
+  const showReviewWarning = useMemo(
+    () => Boolean(visibleSummary && hasHumanReviewWarning(visibleSummary)),
+    [visibleSummary],
+  )
+  const displaySummary = replaceFinalOutcomeIcon(visibleSummary, showReviewWarning)
 
   return (
-    <div className="page-card">
-      <div className="ocr-panel__header">
-        <div>
-          <h3>Riepilogo OCR</h3>
-          <p className="muted">Testo estratto dal documento.</p>
+    <>
+      {showReviewWarning && (
+        <div className="ocr-warning" role="alert">
+          <span className="ocr-warning__icon" aria-hidden="true">!</span>
+          <div>
+            <p className="ocr-warning__title">Revisione umana richiesta</p>
+            <p className="ocr-warning__text">
+              L'analisi OCR ha rilevato possibili discrepanze o informazioni
+              da verificare nella bolla doganale.
+            </p>
+          </div>
         </div>
-        <button
-          type="button"
-          className="button-primary"
-          onClick={handleCopy}
-          disabled={!visibleSummary}
-        >
-          {copied ? 'Copiato' : 'Copia testo'}
-        </button>
+      )}
+      <div className="page-card">
+        <div className="ocr-panel__header">
+          <div>
+            <h3>Riepilogo OCR</h3>
+            <p className="muted">Testo estratto dal documento.</p>
+          </div>
+          <button
+            type="button"
+            className="button-primary"
+            onClick={handleCopy}
+            disabled={!displaySummary}
+          >
+            {copied ? 'Copiato' : 'Copia testo'}
+          </button>
+        </div>
+        <div className="ocr-panel__content">
+          {visibleLoading && <p className="muted">Caricamento riepilogo...</p>}
+          {visibleError && <p className="error-text">{visibleError}</p>}
+          {copyError && <p className="error-text">{copyError}</p>}
+          {!visibleLoading && !visibleError && (
+            <>
+              {displaySummary ? (
+                <pre>{displaySummary}</pre>
+              ) : (
+                <div className="empty-state">
+                  <p className="empty-state__title">Riepilogo non ancora disponibile</p>
+                  <p className="muted">{placeholder}</p>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
-      <div className="ocr-panel__content">
-        {visibleLoading && <p className="muted">Caricamento riepilogo...</p>}
-        {visibleError && <p className="error-text">{visibleError}</p>}
-        {copyError && <p className="error-text">{copyError}</p>}
-        {!visibleLoading && !visibleError && (
-          <>
-            {visibleSummary ? (
-              <pre>{visibleSummary}</pre>
-            ) : (
-              <div className="empty-state">
-                <p className="empty-state__title">Riepilogo non ancora disponibile</p>
-                <p className="muted">{placeholder}</p>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </div>
+    </>
   )
 }
