@@ -5,3 +5,5 @@
 !.env.example
 test_output/
 uploads/
+__pycache__/
+*.pyc
