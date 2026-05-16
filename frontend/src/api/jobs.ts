@@ -5,9 +5,10 @@ import type {
 } from '../types/job'
 import type { JobArtifact } from '../types/artifacts'
 import type { OcrSummaryResponse } from '../types/ocr'
+import { fetchWithAuth } from './client'
 
 export async function startJob(fileId: string): Promise<StartJobResponse> {
-  const response = await fetch('/jobs/start', {
+  const response = await fetchWithAuth('/jobs/start', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -28,7 +29,7 @@ export async function startJob(fileId: string): Promise<StartJobResponse> {
 }
 
 export async function getJobStatus(jobId: string): Promise<JobStatusResponse> {
-  const response = await fetch(`/jobs/${jobId}`)
+  const response = await fetchWithAuth(`/jobs/${jobId}`)
 
   if (!response.ok) {
     throw new Error('Fetch job status failed')
@@ -43,7 +44,7 @@ export async function getJobStatus(jobId: string): Promise<JobStatusResponse> {
 }
 
 export async function getOcrSummary(jobId: string): Promise<OcrSummaryResponse> {
-  const response = await fetch(`/jobs/${jobId}/ocr-summary`)
+  const response = await fetchWithAuth(`/jobs/${jobId}/ocr-summary`)
 
   if (!response.ok) {
     throw new Error('Fetch OCR summary failed')
@@ -56,7 +57,7 @@ export async function getOcrSummary(jobId: string): Promise<OcrSummaryResponse> 
 export async function continueDocumentGeneration(
   jobId: string,
 ): Promise<ContinueGenerationResponse> {
-  const response = await fetch(`/jobs/${jobId}/continue-generation`, {
+  const response = await fetchWithAuth(`/jobs/${jobId}/continue-generation`, {
     method: 'POST',
   })
 
@@ -68,7 +69,7 @@ export async function continueDocumentGeneration(
 }
 
 export async function getJobArtifacts(jobId: string): Promise<JobArtifact[]> {
-  const response = await fetch(`/jobs/${jobId}/artifacts`)
+  const response = await fetchWithAuth(`/jobs/${jobId}/artifacts`)
 
   if (!response.ok) {
     throw new Error('Fetch job artifacts failed')

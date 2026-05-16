@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Literal
 from uuid import uuid4
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, Header, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse
 from docx import Document as DocxDocument
@@ -21,10 +21,17 @@ from openpyxl.utils import get_column_letter
 
 from .config import get_config
 from .graph import workflow
+from .archive_store import (
+  account_id_from_token,
+  find_account_document,
+  list_account_documents,
+  upsert_job_documents,
+)
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 UPLOAD_DIR = BASE_DIR / "uploads"
 OUTPUT_DIR = BASE_DIR / "test_output"
+BOOT_ID = uuid4().hex
 
 DEFAULT_TASK = "Analyze the customs declaration PDF and return structured output."
 
@@ -41,6 +48,16 @@ app.add_middleware(
 
 class UploadResponse(BaseModel):
   fileId: str
+
+
+class LoginRequest(BaseModel):
+  email: str
+  password: str
+
+
+class LoginResponse(BaseModel):
+  token: str
+  companyName: str
 
 
 class StartJobRequest(BaseModel):
@@ -89,11 +106,26 @@ class DocumentItem(BaseModel):
   downloadUrl: str
 
 
+@dataclass(frozen=True)
+class AccountContext:
+  token: str
+  account_id: str
+  company_name: str
+
+
+@dataclass
+class FileRecord:
+  path: Path
+  account_id: str
+
+
 @dataclass
 class JobRecord:
   file_id: str
   file_path: Path
   output_dir: Path
+  account_id: str
+  company_name: str
   status: Literal["queued", "running", "review_required", "completed", "failed"]
   step: str
   error: str | None = None
@@ -103,7 +135,7 @@ class JobRecord:
   completed_at: float | None = None
 
 
-FILES: dict[str, Path] = {}
+FILES: dict[str, FileRecord] = {}
 JOBS: dict[str, JobRecord] = {}
 
 HIDDEN_DOCUMENT_NAMES = {
@@ -170,18 +202,20 @@ def _preview_url(job_id: str, path: Path, doc_type: str) -> str | None:
   return None
 
 
-def _find_document_path(job_id: str, filename: str) -> Path:
+def _find_document_path(job_id: str, filename: str, account_id: str) -> Path:
   safe_name = _safe_filename(filename)
   job = JOBS.get(job_id)
 
-  if job:
+  if job and job.account_id == account_id:
     for item in _documents_for_job(job):
       if item.name == safe_name:
         return item
 
-  candidate = OUTPUT_DIR / job_id / safe_name
-  if candidate.exists() and _is_visible_document(candidate):
-    return candidate
+  archived = find_account_document(account_id, job_id, safe_name)
+  if archived and archived.get("path"):
+    path = _resolve_path(archived["path"])
+    if path.exists() and _is_visible_document(path):
+      return path
 
   raise HTTPException(status_code=404, detail="document not found")
 
@@ -276,6 +310,54 @@ def _html_document(title: str, body: str) -> str:
   </body>
 </html>
 """
+
+
+def _extract_bearer_token(authorization: str | None) -> str:
+  if not authorization:
+    raise HTTPException(status_code=401, detail="missing auth token")
+
+  scheme, _, token = authorization.partition(" ")
+  if scheme.lower() != "bearer" or not token.strip():
+    raise HTTPException(status_code=401, detail="invalid auth token")
+
+  return token.strip()
+
+
+def _company_name_for_token(settings, token: str) -> str | None:
+  if token == settings.auth_demo_token:
+    return settings.auth_company_name
+  if token == settings.auth_demo_token_secondary:
+    return settings.auth_company_name_secondary
+  return None
+
+
+def _match_account_by_credentials(
+  settings,
+  email: str,
+  password: str,
+) -> tuple[str, str] | None:
+  if email == settings.auth_demo_email and password == settings.auth_demo_password:
+    return settings.auth_demo_token, settings.auth_company_name
+  if (
+    email == settings.auth_demo_email_secondary
+    and password == settings.auth_demo_password_secondary
+  ):
+    return settings.auth_demo_token_secondary, settings.auth_company_name_secondary
+  return None
+
+
+def _require_auth(authorization: str | None) -> AccountContext:
+  token = _extract_bearer_token(authorization)
+  settings = get_config()
+  company_name = _company_name_for_token(settings, token)
+  if not company_name:
+    raise HTTPException(status_code=401, detail="invalid auth token")
+
+  return AccountContext(
+    token=token,
+    account_id=account_id_from_token(token),
+    company_name=company_name,
+  )
 
 
 def _excel_color(value) -> str | None:
@@ -609,6 +691,27 @@ def _documents_for_job(job: JobRecord) -> list[Path]:
   return documents
 
 
+def _get_job_for_account(job_id: str, account_id: str) -> JobRecord:
+  job = JOBS.get(job_id)
+  if not job or job.account_id != account_id:
+    raise HTTPException(status_code=404, detail="jobId not found")
+  return job
+
+
+def _persist_archive(job_id: str, job: JobRecord) -> None:
+  if not job.documents:
+    return
+  try:
+    upsert_job_documents(
+      job.account_id,
+      job.company_name,
+      job_id,
+      job.documents,
+    )
+  except Exception:
+    pass
+
+
 def _run_job(job_id: str) -> None:
   job = JOBS.get(job_id)
   if not job:
@@ -644,6 +747,7 @@ def _run_job(job_id: str) -> None:
     job.status = "completed"
     job.step = "done"
     job.completed_at = time.time()
+    _persist_archive(job_id, job)
   except Exception as exc:
     job.status = "failed"
     job.step = "failed"
@@ -681,6 +785,7 @@ def _run_generation_after_review(job_id: str) -> None:
     job.status = "completed"
     job.step = "done"
     job.completed_at = time.time()
+    _persist_archive(job_id, job)
   except Exception as exc:
     job.status = "failed"
     job.step = "failed"
@@ -689,11 +794,30 @@ def _run_generation_after_review(job_id: str) -> None:
 
 @app.get("/health")
 def health() -> dict[str, str]:
-  return {"status": "ok"}
+  return {"status": "ok", "bootId": BOOT_ID}
+
+
+@app.post("/auth/login", response_model=LoginResponse)
+def login(payload: LoginRequest) -> LoginResponse:
+  settings = get_config()
+  match = _match_account_by_credentials(
+    settings,
+    payload.email,
+    payload.password,
+  )
+  if not match:
+    raise HTTPException(status_code=401, detail="invalid credentials")
+
+  token, company_name = match
+  return LoginResponse(token=token, companyName=company_name)
 
 
 @app.post("/upload", response_model=UploadResponse)
-async def upload(file: UploadFile = File(...)) -> UploadResponse:
+async def upload(
+  file: UploadFile = File(...),
+  authorization: str | None = Header(default=None),
+) -> UploadResponse:
+  account = _require_auth(authorization)
   if not file.filename:
     raise HTTPException(status_code=400, detail="Missing filename")
 
@@ -710,15 +834,20 @@ async def upload(file: UploadFile = File(...)) -> UploadResponse:
     raise HTTPException(status_code=400, detail="Empty file")
 
   destination.write_bytes(content)
-  FILES[file_id] = destination
+  FILES[file_id] = FileRecord(path=destination, account_id=account.account_id)
   return UploadResponse(fileId=file_id)
 
 
 @app.post("/jobs/start", response_model=StartJobResponse)
-def start_job(payload: StartJobRequest) -> StartJobResponse:
-  file_path = FILES.get(payload.fileId)
-  if not file_path:
+def start_job(
+  payload: StartJobRequest,
+  authorization: str | None = Header(default=None),
+) -> StartJobResponse:
+  account = _require_auth(authorization)
+  file_record = FILES.get(payload.fileId)
+  if not file_record or file_record.account_id != account.account_id:
     raise HTTPException(status_code=404, detail="fileId not found")
+  file_path = file_record.path
 
   job_id = f"job_{uuid4().hex[:10]}"
   output_dir = OUTPUT_DIR / job_id
@@ -727,6 +856,8 @@ def start_job(payload: StartJobRequest) -> StartJobResponse:
     file_id=payload.fileId,
     file_path=file_path,
     output_dir=output_dir,
+    account_id=account.account_id,
+    company_name=account.company_name,
     status="queued",
     step="queued",
   )
@@ -738,10 +869,12 @@ def start_job(payload: StartJobRequest) -> StartJobResponse:
 
 
 @app.post("/jobs/{job_id}/continue-generation", response_model=ContinueGenerationResponse)
-def continue_generation(job_id: str) -> ContinueGenerationResponse:
-  job = JOBS.get(job_id)
-  if not job:
-    raise HTTPException(status_code=404, detail="jobId not found")
+def continue_generation(
+  job_id: str,
+  authorization: str | None = Header(default=None),
+) -> ContinueGenerationResponse:
+  account = _require_auth(authorization)
+  job = _get_job_for_account(job_id, account.account_id)
   if job.status != "review_required":
     raise HTTPException(
       status_code=409,
@@ -758,10 +891,12 @@ def continue_generation(job_id: str) -> ContinueGenerationResponse:
 
 
 @app.get("/jobs/{job_id}", response_model=JobStatusResponse)
-def get_job(job_id: str) -> JobStatusResponse:
-  job = JOBS.get(job_id)
-  if not job:
-    raise HTTPException(status_code=404, detail="jobId not found")
+def get_job(
+  job_id: str,
+  authorization: str | None = Header(default=None),
+) -> JobStatusResponse:
+  account = _require_auth(authorization)
+  job = _get_job_for_account(job_id, account.account_id)
 
   return JobStatusResponse(
     jobId=job_id,
@@ -772,10 +907,12 @@ def get_job(job_id: str) -> JobStatusResponse:
 
 
 @app.get("/jobs/{job_id}/ocr-summary", response_model=OcrSummaryResponse)
-def get_ocr_summary(job_id: str) -> OcrSummaryResponse:
-  job = JOBS.get(job_id)
-  if not job:
-    raise HTTPException(status_code=404, detail="jobId not found")
+def get_ocr_summary(
+  job_id: str,
+  authorization: str | None = Header(default=None),
+) -> OcrSummaryResponse:
+  account = _require_auth(authorization)
+  job = _get_job_for_account(job_id, account.account_id)
 
   review_level: Literal["none", "warning", "error"] | None = None
   if job.result and isinstance(job.result, dict):
@@ -796,10 +933,12 @@ def get_ocr_summary(job_id: str) -> OcrSummaryResponse:
 
 
 @app.get("/jobs/{job_id}/artifacts", response_model=list[Artifact])
-def get_job_artifacts(job_id: str) -> list[Artifact]:
-  job = JOBS.get(job_id)
-  if not job:
-    raise HTTPException(status_code=404, detail="jobId not found")
+def get_job_artifacts(
+  job_id: str,
+  authorization: str | None = Header(default=None),
+) -> list[Artifact]:
+  account = _require_auth(authorization)
+  job = _get_job_for_account(job_id, account.account_id)
 
   if job.status != "completed":
     return []
@@ -824,17 +963,27 @@ def get_job_artifacts(job_id: str) -> list[Artifact]:
 
 
 @app.get("/documents", response_model=list[DocumentItem])
-def list_documents() -> list[DocumentItem]:
-  items: list[DocumentItem] = []
-  for job_id, job in JOBS.items():
-    if job.status != "completed":
+def list_documents(
+  authorization: str | None = Header(default=None),
+) -> list[DocumentItem]:
+  account = _require_auth(authorization)
+  collected: list[tuple[float, DocumentItem]] = []
+  for record in list_account_documents(account.account_id):
+    path_str = record.get("path")
+    job_id = record.get("jobId")
+    if not path_str or not job_id:
       continue
-    for path in _documents_for_job(job):
-      doc_type, mime = _detect_type(path)
-      download_url = f"/documents/{job_id}/{path.name}"
-      preview_url = _preview_url(job_id, path, doc_type)
-      created_at = _document_timestamp(path)
-      items.append(
+    path = _resolve_path(path_str)
+    if not path.exists() or not _is_visible_document(path):
+      continue
+
+    doc_type, mime = _detect_type(path)
+    download_url = f"/documents/{job_id}/{path.name}"
+    preview_url = _preview_url(job_id, path, doc_type)
+    created_at = _document_timestamp(path)
+    collected.append(
+      (
+        created_at,
         DocumentItem(
           id=f"{job_id}-{path.stem}",
           name=path.name,
@@ -845,15 +994,22 @@ def list_documents() -> list[DocumentItem]:
           jobId=job_id,
           previewUrl=preview_url,
           downloadUrl=download_url,
-        )
+        ),
       )
+    )
 
-  return items
+  collected.sort(key=lambda item: item[0], reverse=True)
+  return [item for _, item in collected]
 
 
 @app.get("/documents/{job_id}/{filename}")
-def download_document(job_id: str, filename: str):
-  path = _find_document_path(job_id, filename)
+def download_document(
+  job_id: str,
+  filename: str,
+  authorization: str | None = Header(default=None),
+):
+  account = _require_auth(authorization)
+  path = _find_document_path(job_id, filename, account.account_id)
 
   if path.suffix.lower() in {".txt", ".md"}:
     return PlainTextResponse(path.read_text(encoding="utf-8"))
@@ -861,8 +1017,13 @@ def download_document(job_id: str, filename: str):
 
 
 @app.get("/documents/{job_id}/{filename}/preview", response_class=HTMLResponse)
-def preview_document(job_id: str, filename: str) -> HTMLResponse:
-  path = _find_document_path(job_id, filename)
+def preview_document(
+  job_id: str,
+  filename: str,
+  authorization: str | None = Header(default=None),
+) -> HTMLResponse:
+  account = _require_auth(authorization)
+  path = _find_document_path(job_id, filename, account.account_id)
   doc_type, _ = _detect_type(path)
 
   if doc_type == "excel":

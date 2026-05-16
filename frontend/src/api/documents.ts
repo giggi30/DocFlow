@@ -1,7 +1,8 @@
+import { fetchWithAuth } from './client'
 import type { ArchiveDocument } from '../types/documents'
 
 export async function getDocuments(): Promise<ArchiveDocument[]> {
-  const response = await fetch('/documents')
+  const response = await fetchWithAuth('/documents')
 
   if (!response.ok) {
     throw new Error('Fetch documents failed')

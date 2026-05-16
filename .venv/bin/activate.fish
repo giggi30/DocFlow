@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV '/Users/luigiragni/Downloads/backup scrivania/Tesi di laurea - DOCFLOW/docflow-demo/.venv'
+set -gx VIRTUAL_ENV '/Users/luigiragni/Desktop/Tesi di laurea - DOCFLOW/docflow-demo/.venv'
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH

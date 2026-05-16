@@ -1,10 +1,11 @@
 import type { UploadResponse } from '../types/upload'
+import { fetchWithAuth } from './client'
 
 export async function uploadPdf(file: File): Promise<UploadResponse> {
   const formData = new FormData()
   formData.append('file', file)
 
-  const response = await fetch('/upload', {
+  const response = await fetchWithAuth('/upload', {
     method: 'POST',
     body: formData,
   })

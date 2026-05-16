@@ -1,0 +1,19 @@
+{
+  "accounts": {
+    "7c43ef5ae21d43ce": {
+      "companyName": "Azienda Demo",
+      "documents": [
+        {
+          "jobId": "job_2130ffb6e2",
+          "filename": "autofattura_google_gemini_srl.xlsx",
+          "path": "test_output/job_2130ffb6e2/autofattura_google_gemini_srl.xlsx"
+        },
+        {
+          "jobId": "job_2130ffb6e2",
+          "filename": "autodichiarazione_google_gemini_srl.docx",
+          "path": "test_output/job_2130ffb6e2/autodichiarazione_google_gemini_srl.docx"
+        }
+      ]
+    }
+  }
+}

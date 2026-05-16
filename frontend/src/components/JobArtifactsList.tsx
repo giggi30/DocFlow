@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { fetchWithAuth } from '../api/client'
 import { getJobArtifacts } from '../api/jobs'
 import DocumentPreviewPanel from './DocumentPreviewPanel'
 import type { JobStatus } from '../types/job'
@@ -56,7 +57,7 @@ export default function JobArtifactsList({ jobId, status }: JobArtifactsListProp
   const handleDownload = async (artifact: JobArtifact) => {
     setDownloadError(null)
     try {
-      const response = await fetch(artifact.downloadUrl)
+      const response = await fetchWithAuth(artifact.downloadUrl)
       if (!response.ok) {
         throw new Error('Download failed')
       }
