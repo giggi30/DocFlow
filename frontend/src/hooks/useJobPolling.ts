@@ -8,9 +8,12 @@ type JobPollingState = {
   error: string | null
 }
 
-const TERMINAL_STATUSES = new Set(['completed', 'failed'])
+const TERMINAL_STATUSES = new Set(['review_required', 'completed', 'failed'])
 
-export default function useJobPolling(jobId: string | null): JobPollingState {
+export default function useJobPolling(
+  jobId: string | null,
+  refreshKey = 0,
+): JobPollingState {
   const [data, setData] = useState<JobStatusResponse | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -21,6 +24,7 @@ export default function useJobPolling(jobId: string | null): JobPollingState {
     }
 
     let isActive = true
+    setIsLoading(true)
     const intervalId = window.setInterval(() => {
       poll()
     }, 3000)
@@ -54,7 +58,7 @@ export default function useJobPolling(jobId: string | null): JobPollingState {
       isActive = false
       window.clearInterval(intervalId)
     }
-  }, [jobId])
+  }, [jobId, refreshKey])
 
   if (!jobId) {
     return { data: null, isLoading: false, error: null }

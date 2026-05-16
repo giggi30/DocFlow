@@ -34,6 +34,8 @@ SECTION_EMOJIS = {
     "VERIFICA CONTABILE E FISCALE": "🧮",
 }
 
+ReviewLevel = Literal["none", "warning", "error"]
+
 
 REVIEW_WARNING_PATTERNS = (
     r"\bdiscrepanz",
@@ -51,29 +53,112 @@ REVIEW_WARNING_PATTERNS = (
     r"\bimpossibile\s+verificare",
 )
 
+REVIEW_CODE_PATTERN = r"\bcodice[_\s-]*esito\s*[:\-]\s*(ok|warning|error|errore)\b"
+
+MINOR_CIF_PATTERNS = (
+    r"\bcif\b",
+    r"\bnolo\b",
+    r"\bassicuraz",
+    r"\btrasport",
+    r"\bfreight\b",
+    r"\binsurance\b",
+)
+
 REASSURING_PATTERNS = (
     r"\bnessun[ao]?\s+discrepanz",
     r"\bsenza\s+discrepanz",
     r"\bnon\s+(sono\s+state\s+)?rilevat[ei]\s+discrepanz",
     r"\bnon\s+emergono\s+discrepanz",
+    r"\bnessun[ao]?\s+errore",
     r"\bdati\s+coerenti",
     r"\bcalcoli\s+coerenti",
 )
 
 
-def _requires_human_review(text: str) -> bool:
+def _clean_section_title(line: str) -> str:
+    clean = line.strip().replace("*", "")
+    clean = re.sub(r"^[^\w]+", "", clean, flags=re.UNICODE)
+    clean = re.sub(r"\s+", " ", clean).strip()
+    return clean.upper().rstrip(":")
+
+
+def _section_lines(text: str, section_title: str) -> list[str]:
+    section_lines: list[str] = []
+    in_section = False
+    known_sections = {*SECTION_EMOJIS.keys(), "ESITO FINALE"}
+
     for line in text.splitlines():
-        clean = line.lower()
-        if any(re.search(pattern, clean) for pattern in REVIEW_WARNING_PATTERNS):
-            if not any(re.search(pattern, clean) for pattern in REASSURING_PATTERNS):
-                return True
-    return False
+        clean_title = _clean_section_title(line)
+        if clean_title == section_title:
+            in_section = True
+            continue
+        if in_section and clean_title in known_sections:
+            break
+        if in_section:
+            section_lines.append(line)
+
+    return section_lines
+
+
+def _has_review_signal(line: str) -> bool:
+    clean = line.lower()
+    return any(re.search(pattern, clean) for pattern in REVIEW_WARNING_PATTERNS)
+
+
+def _is_reassuring(line: str) -> bool:
+    clean = line.lower()
+    return any(re.search(pattern, clean) for pattern in REASSURING_PATTERNS)
+
+
+def _is_minor_cif_signal(line: str) -> bool:
+    clean = line.lower()
+    return any(re.search(pattern, clean) for pattern in MINOR_CIF_PATTERNS)
+
+
+def _review_level_from_code(text: str) -> ReviewLevel | None:
+    match = re.search(REVIEW_CODE_PATTERN, text, flags=re.IGNORECASE)
+    if not match:
+        return None
+    code = match.group(1).lower()
+    if code == "ok":
+        return "none"
+    if code == "warning":
+        return "warning"
+    if code in {"error", "errore"}:
+        return "error"
+    return None
+
+
+def _ocr_review_level(text: str) -> ReviewLevel:
+    coded = _review_level_from_code(text)
+    if coded is not None:
+        return coded
+
+    final_outcome = _section_lines(text, "ESITO FINALE")
+    final_text = "\n".join(final_outcome).lower()
+
+    if final_text:
+        has_reassuring = any(_is_reassuring(line) for line in final_outcome)
+        if re.search(r"\berrore\b|\berror\b|‼|❗|!!!", final_text) and not has_reassuring:
+            return "error"
+        if re.search(r"\bwarning\b|\bavvis[oi]\b|\battenzion", final_text):
+            return "warning"
+        for line in final_outcome:
+            if _has_review_signal(line) and not _is_reassuring(line):
+                return "warning" if _is_minor_cif_signal(line) else "error"
+
+    for line in text.splitlines():
+        if _has_review_signal(line) and not _is_reassuring(line):
+            return "warning"
+
+    return "none"
 
 
 def _format_ocr_output(text: str) -> str:
     lines = text.splitlines()
     formatted: list[str] = []
-    esito_icon = "⚠️" if _requires_human_review(text) else "✅"
+    review_level = _ocr_review_level(text)
+    esito_icon = {"none": "✅", "warning": "⚠️", "error": "‼️"}[review_level]
 
     for line in lines:
         raw_line = line
@@ -85,6 +170,9 @@ def _format_ocr_output(text: str) -> str:
         clean = stripped.replace("*", "")
         clean = re.sub(r"\s+", " ", clean).strip()
         clean = re.sub(r"^[\-–•]+\s*", "", clean)
+
+        if re.search(REVIEW_CODE_PATTERN, clean, flags=re.IGNORECASE):
+            continue
 
         if clean == "ESITO FINALE":
             formatted.append(f"{esito_icon} {clean}")
@@ -138,14 +226,33 @@ def semantic_ocr_node(state: AgentState) -> Command[Literal["rpa_document_genera
     output_dir = state.get("output_dir", "test_output")
     os.makedirs(output_dir, exist_ok=True)
     out_file_path = os.path.join(output_dir, "ocr_output.txt")
+    review_level = _ocr_review_level(response.content)
     formatted_output = _format_ocr_output(response.content)
     with open(out_file_path, "w", encoding="utf-8") as f:
         f.write(formatted_output)
+
+    if review_level == "error":
+        return Command(
+            update={
+                "extracted_data": response.content,
+                "raw_document_path": pdf_path,
+                "ocr_review_level": review_level,
+                "documents_generated": [],
+                "messages": [AIMessage(content=response.content)],
+                "trace": [
+                    "semantic_ocr completed.",
+                    f"semantic_ocr input mode: vision-only ({len(image_data_urls)} pages)",
+                    "semantic_ocr blocked document generation due to fatal OCR error.",
+                ],
+            },
+            goto="__end__",
+        )
     
     return Command(
         update={
             "extracted_data": response.content,
             "raw_document_path": pdf_path,
+            "ocr_review_level": review_level,
             "messages": [AIMessage(content=response.content)],
             "trace": [
                 "semantic_ocr completed.",

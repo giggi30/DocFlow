@@ -14,6 +14,9 @@ export default function DashboardPage() {
     isStarting,
     jobError,
     analyzePdf,
+    continueGeneration,
+    isContinuingGeneration,
+    continueGenerationError,
   } = useDashboardFlow()
 
   return (
@@ -59,7 +62,13 @@ export default function DashboardPage() {
             Riepilogo OCR e documenti generati vengono mostrati appena pronti.
           </p>
         </div>
-        <OcrSummaryPanel jobId={jobId} status={jobStatus?.status ?? null} />
+        <OcrSummaryPanel
+          jobId={jobId}
+          status={jobStatus?.status ?? null}
+          isContinuingGeneration={isContinuingGeneration}
+          continueGenerationError={continueGenerationError}
+          onContinueGeneration={continueGeneration}
+        />
         <JobArtifactsList jobId={jobId} status={jobStatus?.status ?? null} />
       </div>
     </section>

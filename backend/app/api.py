@@ -53,13 +53,19 @@ class StartJobResponse(BaseModel):
 
 class JobStatusResponse(BaseModel):
   jobId: str
-  status: Literal["queued", "running", "completed", "failed"]
+  status: Literal["queued", "running", "review_required", "completed", "failed"]
   step: str | None = None
   error: str | None = None
 
 
 class OcrSummaryResponse(BaseModel):
   text: str
+  reviewLevel: Literal["none", "warning", "error"] | None = None
+
+
+class ContinueGenerationResponse(BaseModel):
+  jobId: str
+  status: Literal["running"]
 
 
 class Artifact(BaseModel):
@@ -88,7 +94,7 @@ class JobRecord:
   file_id: str
   file_path: Path
   output_dir: Path
-  status: Literal["queued", "running", "completed", "failed"]
+  status: Literal["queued", "running", "review_required", "completed", "failed"]
   step: str
   error: str | None = None
   result: dict | None = None
@@ -629,6 +635,49 @@ def _run_job(job_id: str) -> None:
     result = workflow.invoke(initial_state, config)
     job.result = result
     job.documents = _collect_documents(job.output_dir, result if isinstance(result, dict) else None)
+    if isinstance(result, dict) and result.get("ocr_review_level") == "error":
+      job.status = "review_required"
+      job.step = "review_required"
+      job.completed_at = time.time()
+      return
+
+    job.status = "completed"
+    job.step = "done"
+    job.completed_at = time.time()
+  except Exception as exc:
+    job.status = "failed"
+    job.step = "failed"
+    job.error = str(exc)
+
+
+def _run_generation_after_review(job_id: str) -> None:
+  job = JOBS.get(job_id)
+  if not job:
+    return
+
+  job.status = "running"
+  job.step = "generating_documents"
+  job.error = None
+
+  try:
+    os.chdir(BASE_DIR)
+    get_config()
+
+    previous_result = job.result if isinstance(job.result, dict) else {}
+    resume_state = {
+      **previous_result,
+      "task": "Generate documents after human approval of fatal OCR findings.",
+      "raw_document_path": str(job.file_path),
+      "source_document_name": _original_upload_name(job.file_id, job.file_path),
+      "job_id": job_id,
+      "output_dir": str(job.output_dir),
+      "resume_document_generation": True,
+      "messages": [HumanMessage(content="Human approved document generation after OCR review.")],
+    }
+    config = {"configurable": {"thread_id": f"job-{job_id}-generation"}}
+    result = workflow.invoke(resume_state, config)
+    job.result = result
+    job.documents = _collect_documents(job.output_dir, result if isinstance(result, dict) else None)
     job.status = "completed"
     job.step = "done"
     job.completed_at = time.time()
@@ -688,6 +737,26 @@ def start_job(payload: StartJobRequest) -> StartJobResponse:
   return StartJobResponse(jobId=job_id)
 
 
+@app.post("/jobs/{job_id}/continue-generation", response_model=ContinueGenerationResponse)
+def continue_generation(job_id: str) -> ContinueGenerationResponse:
+  job = JOBS.get(job_id)
+  if not job:
+    raise HTTPException(status_code=404, detail="jobId not found")
+  if job.status != "review_required":
+    raise HTTPException(
+      status_code=409,
+      detail="document generation can only be continued after a fatal OCR review block",
+    )
+
+  job.status = "running"
+  job.step = "generating_documents"
+  job.error = None
+  worker = threading.Thread(target=_run_generation_after_review, args=(job_id,), daemon=True)
+  worker.start()
+
+  return ContinueGenerationResponse(jobId=job_id, status="running")
+
+
 @app.get("/jobs/{job_id}", response_model=JobStatusResponse)
 def get_job(job_id: str) -> JobStatusResponse:
   job = JOBS.get(job_id)
@@ -708,6 +777,10 @@ def get_ocr_summary(job_id: str) -> OcrSummaryResponse:
   if not job:
     raise HTTPException(status_code=404, detail="jobId not found")
 
+  review_level: Literal["none", "warning", "error"] | None = None
+  if job.result and isinstance(job.result, dict):
+    review_level = job.result.get("ocr_review_level")
+
   text = ""
   ocr_path = job.output_dir / "ocr_output.txt"
   if ocr_path.exists():
@@ -717,9 +790,9 @@ def get_ocr_summary(job_id: str) -> OcrSummaryResponse:
     text = str(job.result.get("extracted_data", "") or "")
 
   if not text:
-    return OcrSummaryResponse(text="")
+    return OcrSummaryResponse(text="", reviewLevel=review_level)
 
-  return OcrSummaryResponse(text=text)
+  return OcrSummaryResponse(text=text, reviewLevel=review_level)
 
 
 @app.get("/jobs/{job_id}/artifacts", response_model=list[Artifact])

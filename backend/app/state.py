@@ -23,6 +23,7 @@ class AgentState(TypedDict, total=False):
     
     # RPA state 
     documents_generated: list[str]
+    resume_document_generation: bool
     
     # Tracking state
     tracking_info: str
@@ -31,6 +32,7 @@ class AgentState(TypedDict, total=False):
     kpi_recommendation: str
     
     # Control flow state
+    ocr_review_level: str
     error_detected: bool
     error_message: str
     

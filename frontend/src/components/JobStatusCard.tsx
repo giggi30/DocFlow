@@ -10,6 +10,7 @@ type JobStatusCardProps = {
 const statusLabels: Record<JobStatus, string> = {
   queued: 'In coda',
   running: 'In esecuzione',
+  review_required: 'Revisione richiesta',
   completed: 'Completato',
   failed: 'Errore',
 }
@@ -17,6 +18,7 @@ const statusLabels: Record<JobStatus, string> = {
 const statusClasses: Record<JobStatus, string> = {
   queued: 'status-pill status-pill--queued',
   running: 'status-pill status-pill--running',
+  review_required: 'status-pill status-pill--review',
   completed: 'status-pill status-pill--success',
   failed: 'status-pill status-pill--error',
 }
@@ -35,6 +37,9 @@ export default function JobStatusCard({ jobId, status, isLoading, error }: JobSt
     }
     if (currentStatus === 'completed') {
       return 'Elaborazione completata. I documenti sono disponibili qui sotto.'
+    }
+    if (currentStatus === 'review_required') {
+      return 'Generazione documenti sospesa: completa la revisione OCR e procedi dal banner rosso.'
     }
     if (currentStatus === 'failed') {
       return 'Elaborazione interrotta. Leggi il dettaglio errore qui sotto.'

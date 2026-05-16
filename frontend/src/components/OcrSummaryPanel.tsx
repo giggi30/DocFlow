@@ -5,7 +5,12 @@ import type { JobStatus } from '../types/job'
 type OcrSummaryPanelProps = {
   jobId: string | null
   status: JobStatus | null
+  isContinuingGeneration: boolean
+  continueGenerationError: string | null
+  onContinueGeneration: () => Promise<void>
 }
+
+type ReviewLevel = 'none' | 'warning' | 'error'
 
 const reviewWarningPatterns = [
   /\bdiscrepanz/i,
@@ -23,32 +28,147 @@ const reviewWarningPatterns = [
   /\bimpossibile\s+verificare/i,
 ]
 
+const minorCifPatterns = [
+  /\bcif\b/i,
+  /\bnolo\b/i,
+  /\bassicuraz/i,
+  /\btrasport/i,
+  /\bfreight\b/i,
+  /\binsurance\b/i,
+]
+
 const reassuringPatterns = [
   /\bnessun[ao]?\s+discrepanz/i,
   /\bsenza\s+discrepanz/i,
   /\bnon\s+(sono\s+state\s+)?rilevat[ei]\s+discrepanz/i,
   /\bnon\s+emergono\s+discrepanz/i,
+  /\bnessun[ao]?\s+errore/i,
   /\bdati\s+coerenti/i,
   /\bcalcoli\s+coerenti/i,
 ]
 
-function hasHumanReviewWarning(text: string) {
-  return text.split('\n').some((line) => {
-    const hasWarning = reviewWarningPatterns.some((pattern) => pattern.test(line))
-    const isReassuring = reassuringPatterns.some((pattern) => pattern.test(line))
-    return hasWarning && !isReassuring
-  })
+const reviewCodePattern = /\bcodice[_\s-]*esito\s*[:\-]\s*(ok|warning|error|errore)\b/i
+
+function cleanSectionTitle(line: string) {
+  return line
+    .trim()
+    .replace(/\*/g, '')
+    .replace(/^[^\p{L}\p{N}]+/u, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/:$/, '')
+    .toUpperCase()
 }
 
-function replaceFinalOutcomeIcon(text: string, hasWarning: boolean) {
-  if (!hasWarning) {
+function sectionLines(text: string, sectionTitle: string) {
+  const knownSections = new Set([
+    'DATI GENERALI',
+    'DETTAGLIO MERCI E VALORI',
+    'ESTRAZIONE DELLE RIGHE TRIBUTARIE',
+    'VERIFICA CONTABILE E FISCALE',
+    'ESITO FINALE',
+  ])
+  const lines: string[] = []
+  let isInSection = false
+
+  text.split('\n').forEach((line) => {
+    const cleanTitle = cleanSectionTitle(line)
+    if (cleanTitle === sectionTitle) {
+      isInSection = true
+      return
+    }
+    if (isInSection && knownSections.has(cleanTitle)) {
+      isInSection = false
+      return
+    }
+    if (isInSection) {
+      lines.push(line)
+    }
+  })
+
+  return lines
+}
+
+function hasReviewSignal(line: string) {
+  return reviewWarningPatterns.some((pattern) => pattern.test(line))
+}
+
+function isReassuring(line: string) {
+  return reassuringPatterns.some((pattern) => pattern.test(line))
+}
+
+function isMinorCifSignal(line: string) {
+  return minorCifPatterns.some((pattern) => pattern.test(line))
+}
+
+function getReviewLevelFromCode(text: string): ReviewLevel | null {
+  const match = text.match(reviewCodePattern)
+  if (!match) {
+    return null
+  }
+  const code = match[1].toLowerCase()
+  if (code === 'ok') {
+    return 'none'
+  }
+  if (code === 'warning') {
+    return 'warning'
+  }
+  if (code === 'error' || code === 'errore') {
+    return 'error'
+  }
+  return null
+}
+
+function getOcrReviewLevel(text: string): ReviewLevel {
+  const coded = getReviewLevelFromCode(text)
+  if (coded) {
+    return coded
+  }
+
+  const finalOutcome = sectionLines(text, 'ESITO FINALE')
+  const finalText = finalOutcome.join('\n')
+
+  if (finalText) {
+    const hasReassuring = finalOutcome.some((line) => isReassuring(line))
+    if (/\berrore\b|\berror\b|‼|❗|!!!/i.test(finalText) && !hasReassuring) {
+      return 'error'
+    }
+    if (/\bwarning\b|\bavvis[oi]\b|\battenzion/i.test(finalText)) {
+      return 'warning'
+    }
+
+    const finalSignal = finalOutcome.find(
+      (line) => hasReviewSignal(line) && !isReassuring(line),
+    )
+    if (finalSignal) {
+      return isMinorCifSignal(finalSignal) ? 'warning' : 'error'
+    }
+  }
+
+  const hasNonBlockingSignal = text
+    .split('\n')
+    .some((line) => hasReviewSignal(line) && !isReassuring(line))
+
+  return hasNonBlockingSignal ? 'warning' : 'none'
+}
+
+function replaceFinalOutcomeIcon(text: string, reviewLevel: ReviewLevel) {
+  if (reviewLevel === 'none') {
     return text
   }
-  return text.replace(/✅\s*ESITO FINALE/g, '⚠️ ESITO FINALE')
+  const icon = reviewLevel === 'error' ? '‼️' : '⚠️'
+  return text.replace(/(?:✅|⚠️|‼️)?[ \t]*ESITO FINALE/g, `${icon} ESITO FINALE`)
 }
 
-export default function OcrSummaryPanel({ jobId, status }: OcrSummaryPanelProps) {
+export default function OcrSummaryPanel({
+  jobId,
+  status,
+  isContinuingGeneration,
+  continueGenerationError,
+  onContinueGeneration,
+}: OcrSummaryPanelProps) {
   const [summary, setSummary] = useState<string>('')
+  const [summaryReviewLevel, setSummaryReviewLevel] = useState<ReviewLevel | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [copyError, setCopyError] = useState<string | null>(null)
@@ -71,6 +191,7 @@ export default function OcrSummaryPanel({ jobId, status }: OcrSummaryPanelProps)
       if (isInitial) {
         setIsLoading(true)
         setSummary('')
+        setSummaryReviewLevel(null)
         setError(null)
         setCopyError(null)
         setHasFetched(false)
@@ -82,12 +203,14 @@ export default function OcrSummaryPanel({ jobId, status }: OcrSummaryPanelProps)
           return
         }
         const nextText = data.text ?? ''
+        const nextReviewLevel = data.reviewLevel ?? null
         if (nextText) {
           setSummary(nextText)
           if (intervalId) {
             window.clearInterval(intervalId)
           }
         }
+        setSummaryReviewLevel(nextReviewLevel)
         setError(null)
         setHasFetched(true)
       } catch {
@@ -159,24 +282,63 @@ export default function OcrSummaryPanel({ jobId, status }: OcrSummaryPanelProps)
   const visibleSummary = jobId ? summary : ''
   const visibleLoading = Boolean(jobId) && isLoading && !hasFetched
   const visibleError = jobId ? error : null
-  const showReviewWarning = useMemo(
-    () => Boolean(visibleSummary && hasHumanReviewWarning(visibleSummary)),
-    [visibleSummary],
+  const reviewLevel = useMemo(
+    () => {
+      if (summaryReviewLevel !== null) {
+        return summaryReviewLevel
+      }
+      return visibleSummary ? getOcrReviewLevel(visibleSummary) : 'none'
+    },
+    [summaryReviewLevel, visibleSummary],
   )
-  const displaySummary = replaceFinalOutcomeIcon(visibleSummary, showReviewWarning)
+  const displaySummary = replaceFinalOutcomeIcon(visibleSummary, reviewLevel)
+  const contentClassName = [
+    'ocr-panel__content',
+    reviewLevel === 'error' ? 'ocr-panel__content--error' : '',
+    reviewLevel === 'warning' ? 'ocr-panel__content--warning' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
     <>
-      {showReviewWarning && (
-        <div className="ocr-warning" role="alert">
-          <span className="ocr-warning__icon" aria-hidden="true">!</span>
+      {reviewLevel === 'warning' && (
+        <div className="ocr-banner ocr-warning" role="status">
+          <span className="ocr-banner__icon" aria-hidden="true">!</span>
           <div>
-            <p className="ocr-warning__title">Revisione umana richiesta</p>
-            <p className="ocr-warning__text">
-              L'analisi OCR ha rilevato possibili discrepanze o informazioni
-              da verificare nella bolla doganale.
+            <p className="ocr-banner__title">Warning contabile</p>
+            <p className="ocr-banner__text">
+              L'analisi OCR ha rilevato possibili differenze compatibili con
+              costi di nolo, trasporto o assicurazione CIF.
             </p>
           </div>
+        </div>
+      )}
+      {reviewLevel === 'error' && (
+        <div className="ocr-banner ocr-error" role="alert">
+          <span className="ocr-banner__icon" aria-hidden="true">!!</span>
+          <div>
+            <p className="ocr-banner__title">Errore fatale: revisione richiesta</p>
+            <p className="ocr-banner__text">
+              L'analisi OCR ha rilevato discrepanze significative da verificare
+              nella bolla doganale.
+            </p>
+            {continueGenerationError && (
+              <p className="ocr-banner__error">{continueGenerationError}</p>
+            )}
+          </div>
+          {status === 'review_required' && (
+            <button
+              type="button"
+              className="ocr-error__action"
+              onClick={onContinueGeneration}
+              disabled={isContinuingGeneration}
+            >
+              {isContinuingGeneration
+                ? 'Generazione in corso'
+                : 'Procedi con la generazione'}
+            </button>
+          )}
         </div>
       )}
       <div className="page-card">
@@ -194,7 +356,7 @@ export default function OcrSummaryPanel({ jobId, status }: OcrSummaryPanelProps)
             {copied ? 'Copiato' : 'Copia testo'}
           </button>
         </div>
-        <div className="ocr-panel__content">
+        <div className={contentClassName}>
           {visibleLoading && <p className="muted">Caricamento riepilogo...</p>}
           {visibleError && <p className="error-text">{visibleError}</p>}
           {copyError && <p className="error-text">{copyError}</p>}

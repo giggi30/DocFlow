@@ -1,4 +1,8 @@
-import type { JobStatusResponse, StartJobResponse } from '../types/job'
+import type {
+  ContinueGenerationResponse,
+  JobStatusResponse,
+  StartJobResponse,
+} from '../types/job'
 import type { JobArtifact } from '../types/artifacts'
 import type { OcrSummaryResponse } from '../types/ocr'
 
@@ -47,6 +51,20 @@ export async function getOcrSummary(jobId: string): Promise<OcrSummaryResponse> 
 
   const data = (await response.json()) as OcrSummaryResponse
   return data
+}
+
+export async function continueDocumentGeneration(
+  jobId: string,
+): Promise<ContinueGenerationResponse> {
+  const response = await fetch(`/jobs/${jobId}/continue-generation`, {
+    method: 'POST',
+  })
+
+  if (!response.ok) {
+    throw new Error('Continue document generation failed')
+  }
+
+  return (await response.json()) as ContinueGenerationResponse
 }
 
 export async function getJobArtifacts(jobId: string): Promise<JobArtifact[]> {

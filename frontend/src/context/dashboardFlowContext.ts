@@ -10,6 +10,9 @@ export type DashboardFlowContextValue = {
   isStarting: boolean
   jobError: string | null
   analyzePdf: (file: File) => Promise<void>
+  continueGeneration: () => Promise<void>
+  isContinuingGeneration: boolean
+  continueGenerationError: string | null
 }
 
 export const DashboardFlowContext =

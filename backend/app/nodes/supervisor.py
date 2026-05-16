@@ -24,7 +24,16 @@ def _extract_json_payload(text: str) -> dict | None:
         return None
 
 
-def supervisor_node(state: AgentState) -> Command[Literal["semantic_ocr", "analytics_recommendation", "__end__"]]:
+def supervisor_node(state: AgentState) -> Command[Literal["semantic_ocr", "rpa_document_generation", "analytics_recommendation", "__end__"]]:
+    if state.get("resume_document_generation"):
+        return Command(
+            update={
+                "trace": ["Supervisor routed to rpa_document_generation after human approval."],
+                "messages": [AIMessage(content="Supervisor route decision: rpa_document_generation after human approval.")],
+            },
+            goto="rpa_document_generation",
+        )
+
     model = get_chat_model("supervisor", temperature=0.0).with_structured_output(RouteDecision)
     messages_to_pass = state.get("messages", [])[-5:]  # Only keep last 5 for context limit
 

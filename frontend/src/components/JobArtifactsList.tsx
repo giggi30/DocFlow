@@ -86,6 +86,9 @@ export default function JobArtifactsList({ jobId, status }: JobArtifactsListProp
     if (status === 'failed') {
       return 'Nessun documento generato: il job e fallito.'
     }
+    if (status === 'review_required') {
+      return 'Generazione sospesa per errore fatale OCR. Procedi dal banner rosso dopo la revisione.'
+    }
     if (status !== 'completed') {
       return "I documenti saranno disponibili al termine dell'elaborazione."
     }
