@@ -14,6 +14,21 @@
           "path": "test_output/job_2130ffb6e2/autodichiarazione_google_gemini_srl.docx"
         }
       ]
+    },
+    "776bd4f003359159": {
+      "companyName": "Luigi srl",
+      "documents": [
+        {
+          "jobId": "job_fe000ac605",
+          "filename": "autofattura_chatgpt.xlsx",
+          "path": "test_output/job_fe000ac605/autofattura_chatgpt.xlsx"
+        },
+        {
+          "jobId": "job_fe000ac605",
+          "filename": "autodichiarazione_chatgpt.docx",
+          "path": "test_output/job_fe000ac605/autodichiarazione_chatgpt.docx"
+        }
+      ]
     }
   }
 }

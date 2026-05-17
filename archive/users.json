@@ -1,0 +1,18 @@
+{
+  "users": {
+    "docflow@unimol.progetto.it": {
+      "email": "docflow@unimol.progetto.it",
+      "companyName": "DocFlow Unimol",
+      "passwordHash": "99233341df015fc6bb93749beae90bd82441ed4766d94e30cbe0cd0be29ad843",
+      "salt": "a2701b6b0b4297616c65b620323f4d49",
+      "token": "9118ONbLKVBlkILR3STvbVkVNVxiGOoXZK83MQhkm7Q"
+    },
+    "luigiragni@prova.it": {
+      "email": "luigiragni@prova.it",
+      "companyName": "Luigi srl",
+      "passwordHash": "737ec7fea3f68b75af1abd4658ec6c65098b3221cd9ff590dafc76076233297a",
+      "salt": "30aee2bea101d085984c516af55da107",
+      "token": "83h5DQ4U6eHawvvPFRwIAo6Z4OTI-1DpQlMhX_7QrcQ"
+    }
+  }
+}

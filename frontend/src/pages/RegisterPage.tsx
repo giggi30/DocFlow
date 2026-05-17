@@ -1,14 +1,29 @@
 import { type FormEvent, useState } from 'react'
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 
-export default function LoginPage() {
-  const { isAuthenticated, isReady, login } = useAuth()
-  const location = useLocation()
+const defaultErrorMessage = 'Registrazione fallita. Verifica i dati.'
+
+function resolveErrorMessage(error: unknown) {
+  if (!(error instanceof Error)) {
+    return defaultErrorMessage
+  }
+
+  const message = error.message.trim()
+  if (!message) {
+    return defaultErrorMessage
+  }
+  if (message.toLowerCase().includes('already')) {
+    return 'Email gia registrata.'
+  }
+  return message
+}
+
+export default function RegisterPage() {
+  const { isAuthenticated, isReady, register } = useAuth()
   const navigate = useNavigate()
-  const { registered, email: registeredEmail } =
-    (location.state as { registered?: boolean; email?: string } | null) ?? {}
-  const [email, setEmail] = useState(registeredEmail ?? '')
+  const [companyName, setCompanyName] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -23,10 +38,13 @@ export default function LoginPage() {
     setIsSubmitting(true)
 
     try {
-      await login(email.trim(), password)
-      navigate('/', { replace: true })
-    } catch {
-      setError('Credenziali non valide. Verifica email e password.')
+      await register(companyName.trim(), email.trim(), password)
+      navigate('/login', {
+        replace: true,
+        state: { registered: true, email: email.trim() },
+      })
+    } catch (err) {
+      setError(resolveErrorMessage(err))
     } finally {
       setIsSubmitting(false)
     }
@@ -37,14 +55,27 @@ export default function LoginPage() {
       <div className="login-card">
         <div className="login-header">
           <span className="login-eyebrow">DocFlow</span>
-          <h1>Accesso area riservata</h1>
-          <p>Inserisci le credenziali per accedere alla dashboard.</p>
+          <h1>Crea il tuo account</h1>
+          <p>Inserisci i dati aziendali per attivare la dashboard.</p>
         </div>
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="login-field">
-            <label htmlFor="login-email">Email</label>
+            <label htmlFor="register-company">Nome azienda</label>
             <input
-              id="login-email"
+              id="register-company"
+              type="text"
+              name="companyName"
+              autoComplete="organization"
+              value={companyName}
+              onChange={(event) => setCompanyName(event.target.value)}
+              placeholder="Azienda Srl"
+              required
+            />
+          </div>
+          <div className="login-field">
+            <label htmlFor="register-email">Email</label>
+            <input
+              id="register-email"
               type="email"
               name="email"
               autoComplete="email"
@@ -55,12 +86,12 @@ export default function LoginPage() {
             />
           </div>
           <div className="login-field">
-            <label htmlFor="login-password">Password</label>
+            <label htmlFor="register-password">Password</label>
             <input
-              id="login-password"
+              id="register-password"
               type="password"
               name="password"
-              autoComplete="current-password"
+              autoComplete="new-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               placeholder="Password"
@@ -68,24 +99,18 @@ export default function LoginPage() {
             />
           </div>
           {error && <p className="error-text">{error}</p>}
-          {!error && registered && (
-            <p className="success-text">Registrazione completata. Ora accedi.</p>
-          )}
           <div className="login-actions">
             <button
               className="button-primary"
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Accesso in corso...' : 'Accedi'}
+              {isSubmitting ? 'Registrazione in corso...' : 'Registrati'}
             </button>
           </div>
         </form>
         <p className="login-footer">
-          Non hai un account? <Link to="/register">Registrati</Link>
-        </p>
-        <p className="login-footer">
-          Per assistenza contatta il team interno DocFlow.
+          Hai gia un account? <Link to="/login">Accedi</Link>
         </p>
       </div>
     </div>

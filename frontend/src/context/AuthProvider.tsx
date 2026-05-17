@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
-import { login as loginRequest } from '../api/auth'
+import { login as loginRequest, register as registerRequest } from '../api/auth'
 import {
   AUTH_STORAGE_KEY,
   clearSession,
@@ -26,6 +26,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setSession(nextSession)
     return nextSession
   }, [])
+
+  const register = useCallback(
+    async (companyName: string, email: string, password: string) => {
+      await registerRequest(companyName, email, password)
+    },
+    [],
+  )
 
   const logout = useCallback(() => {
     clearSession()
@@ -92,9 +99,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       isAuthenticated: Boolean(session),
       isReady,
       login,
+      register,
       logout,
     }),
-    [session, isReady, login, logout],
+    [session, isReady, login, register, logout],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

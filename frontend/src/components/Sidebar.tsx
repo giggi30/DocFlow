@@ -32,7 +32,7 @@ export default function Sidebar() {
         </NavLink>
       </nav>
       <div className="app-sidebar__footer">
-        <span className="muted">V1.0.3</span>
+        <span className="muted">V1.1.0</span>
       </div>
     </aside>
   )

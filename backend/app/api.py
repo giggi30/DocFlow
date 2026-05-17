@@ -27,6 +27,11 @@ from .archive_store import (
   list_account_documents,
   upsert_job_documents,
 )
+from .auth_store import (
+  create_user,
+  get_company_name_by_token,
+  verify_user,
+)
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 UPLOAD_DIR = BASE_DIR / "uploads"
@@ -51,6 +56,12 @@ class UploadResponse(BaseModel):
 
 
 class LoginRequest(BaseModel):
+  email: str
+  password: str
+
+
+class RegisterRequest(BaseModel):
+  companyName: str
   email: str
   password: str
 
@@ -324,6 +335,9 @@ def _extract_bearer_token(authorization: str | None) -> str:
 
 
 def _company_name_for_token(settings, token: str) -> str | None:
+  company_name = get_company_name_by_token(token)
+  if company_name:
+    return company_name
   if token == settings.auth_demo_token:
     return settings.auth_company_name
   if token == settings.auth_demo_token_secondary:
@@ -336,6 +350,9 @@ def _match_account_by_credentials(
   email: str,
   password: str,
 ) -> tuple[str, str] | None:
+  match = verify_user(email, password)
+  if match:
+    return match
   if email == settings.auth_demo_email and password == settings.auth_demo_password:
     return settings.auth_demo_token, settings.auth_company_name
   if (
@@ -809,6 +826,22 @@ def login(payload: LoginRequest) -> LoginResponse:
     raise HTTPException(status_code=401, detail="invalid credentials")
 
   token, company_name = match
+  return LoginResponse(token=token, companyName=company_name)
+
+
+@app.post("/auth/register", response_model=LoginResponse)
+def register(payload: RegisterRequest) -> LoginResponse:
+  try:
+    token, company_name = create_user(
+      payload.email,
+      payload.password,
+      payload.companyName,
+    )
+  except ValueError as exc:
+    detail = str(exc)
+    status_code = 409 if "already" in detail else 400
+    raise HTTPException(status_code=status_code, detail=detail)
+
   return LoginResponse(token=token, companyName=company_name)
 
 
