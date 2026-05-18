@@ -151,8 +151,8 @@ JOBS: dict[str, JobRecord] = {}
 
 HIDDEN_DOCUMENT_NAMES = {
   "ocr_output.txt",
-  "rpa_mapping.json",
-  "rpa_raw_response.txt",
+  "apa_mapping.json",
+  "apa_raw_response.txt",
 }
 
 

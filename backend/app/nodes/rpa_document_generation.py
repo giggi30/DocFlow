@@ -1,4 +1,4 @@
-"""RPA & Document Generation node using LLM for structured extraction and document compilation."""
+"""APA & Document Generation node using LLM for structured extraction and document compilation."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langgraph.types import Command
 
 from ..openrouter_client import get_chat_model
-from ..prompts import RPA_PROMPT
+from ..prompts import APA_PROMPT
 from ..state import AgentState
 
 # ---------------------------------------------------------------------------
@@ -498,7 +498,7 @@ def _invoke_with_retry(model, messages: list) -> "AIMessage":
         except json.JSONDecodeError as exc:
             last_error = exc
             print(
-                f"⚠️  RPA invoke attempt {attempt}/{MAX_INVOKE_RETRIES} failed "
+                f"⚠️  APA invoke attempt {attempt}/{MAX_INVOKE_RETRIES} failed "
                 f"(JSONDecodeError from API response): {exc}"
             )
             if attempt < MAX_INVOKE_RETRIES:
@@ -507,20 +507,20 @@ def _invoke_with_retry(model, messages: list) -> "AIMessage":
             # Catch other transient errors (timeouts, connection resets, etc.)
             last_error = exc
             print(
-                f"⚠️  RPA invoke attempt {attempt}/{MAX_INVOKE_RETRIES} failed "
+                f"⚠️  APA invoke attempt {attempt}/{MAX_INVOKE_RETRIES} failed "
                 f"({type(exc).__name__}): {exc}"
             )
             if attempt < MAX_INVOKE_RETRIES:
                 time.sleep(RETRY_DELAY_SECONDS * attempt)
     raise RuntimeError(
-        f"RPA LLM invocation failed after {MAX_INVOKE_RETRIES} attempts. "
+        f"APA LLM invocation failed after {MAX_INVOKE_RETRIES} attempts. "
         f"Last error: {last_error}"
     )
 
 
-def rpa_document_generation_node(state: AgentState) -> Command[Literal["tracking_route_planning"]]:
-    """RPA node: uses LLM to map OCR data → JSON, then fills Excel & Word templates."""
-    model = get_chat_model("rpa_document_generation", temperature=0.1)
+def apa_document_generation_node(state: AgentState) -> Command[Literal["tracking_route_planning"]]:
+    """APA node: uses LLM to map OCR data → JSON, then fills Excel & Word templates."""
+    model = get_chat_model("apa_document_generation", temperature=0.1)
 
     output_dir = state.get("output_dir", DEFAULT_OUTPUT_DIR)
     ocr_output_path = os.path.join(output_dir, "ocr_output.txt")
@@ -541,7 +541,7 @@ def rpa_document_generation_node(state: AgentState) -> Command[Literal["tracking
 
     # 4. Call LLM to produce structured JSON mapping (with retry for transient errors)
     messages = [
-        SystemMessage(content=RPA_PROMPT),
+        SystemMessage(content=APA_PROMPT),
         HumanMessage(content=(
             "Below is the OCR analysis output of a customs declaration (bolla doganale). "
             "Analyze it and generate the structured JSON to fill the autofattura and autodichiarazione.\n\n"
@@ -560,7 +560,7 @@ def rpa_document_generation_node(state: AgentState) -> Command[Literal["tracking
             update={
                 "documents_generated": [],
                 "messages": [AIMessage(content=f"❌ Errore nella chiamata LLM (tutti i tentativi falliti): {exc}")],
-                "trace": [f"rpa_document_generation FAILED (API error): {exc}"],
+                "trace": [f"apa_document_generation FAILED (API error): {exc}"],
             },
             goto="tracking_route_planning",
         )
@@ -572,7 +572,7 @@ def rpa_document_generation_node(state: AgentState) -> Command[Literal["tracking
     llm_content = _get_llm_content(response)
     
     # Always dump the full response for debugging
-    debug_path = os.path.join(output_dir, "rpa_raw_response.txt")
+    debug_path = os.path.join(output_dir, "apa_raw_response.txt")
     with open(debug_path, "w", encoding="utf-8") as f:
         f.write(f"=== content ===\n{response.content}\n\n")
         f.write(f"=== additional_kwargs ===\n{getattr(response, 'additional_kwargs', {})}\n\n")
@@ -583,7 +583,7 @@ def rpa_document_generation_node(state: AgentState) -> Command[Literal["tracking
         mapping = _extract_json(llm_content)
 
         # Save the raw JSON mapping for debugging
-        json_out = os.path.join(output_dir, "rpa_mapping.json")
+        json_out = os.path.join(output_dir, "apa_mapping.json")
         with open(json_out, "w", encoding="utf-8") as f:
             json.dump(mapping, f, ensure_ascii=False, indent=2)
 
@@ -605,7 +605,7 @@ def rpa_document_generation_node(state: AgentState) -> Command[Literal["tracking
             f"  - Mapping JSON: {json_out}"
         )
         trace_entries = [
-            "rpa_document_generation completed.",
+            "apa_document_generation completed.",
             f"autofattura salvata: {autofattura_out}",
             f"autodichiarazione salvata: {autodichiarazione_out}",
         ]
@@ -613,7 +613,7 @@ def rpa_document_generation_node(state: AgentState) -> Command[Literal["tracking
     except (json.JSONDecodeError, ValueError, KeyError) as exc:
         documents = []
         summary = f"❌ Errore nella generazione documenti: {exc}\n\nRisposta LLM:\n{llm_content[:1000]}"
-        trace_entries = [f"rpa_document_generation FAILED: {exc}"]
+        trace_entries = [f"apa_document_generation FAILED: {exc}"]
 
     return Command(
         update={

@@ -13,6 +13,13 @@
       "passwordHash": "737ec7fea3f68b75af1abd4658ec6c65098b3221cd9ff590dafc76076233297a",
       "salt": "30aee2bea101d085984c516af55da107",
       "token": "83h5DQ4U6eHawvvPFRwIAo6Z4OTI-1DpQlMhX_7QrcQ"
+    },
+    "unim@gmail.it": {
+      "email": "unim@gmail.it",
+      "companyName": "unimo",
+      "passwordHash": "38f7ac3abe2fabca0668d23976c12187a1ad4eda549bdd6436d132f665a012b7",
+      "salt": "342191c971ec4e2dc9efc9cf5c5cb112",
+      "token": "jNKIO5E00abQI0g4htGcRLysGpKUccDBP619La4wHJE"
     }
   }
 }

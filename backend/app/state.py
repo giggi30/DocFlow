@@ -21,7 +21,7 @@ class AgentState(TypedDict, total=False):
     extracted_data: str
     validation_logs: str
     
-    # RPA state 
+    # APA state 
     documents_generated: list[str]
     resume_document_generation: bool
     

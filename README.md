@@ -13,7 +13,7 @@ Strumenti: modelli multimodali open source come Kimi K2.5.
 Azione: esegue l'estrazione semantica dai PDF e dai documenti doganali non strutturati.
 Logica applicata: classifica le voci di spesa e applica regole di congruenza per la verifica automatica, intercettando errori e anomalie.
 
-3. Agente RPA e Generazione Documentale (RPA/Doc Agent)
+3. Agente APA e Generazione Documentale (APA/Doc Agent)
 Strumenti: nodi di LangGraph che eseguono script Python nativi (pandas, python-docx, openpyxl) o integrazioni con framework come Robot Framework.
 Azione: compila dinamicamente fogli Excel e documenti Word partendo dal JSON generato dal Vision Agent.
 Integrazione: gestisce l'archiviazione automatica e la generazione strutturata dei tracciati digitali per l'inserimento nei gestionali ERP aziendali.
@@ -68,7 +68,7 @@ Ingestion: l'utente carica le bolle doganali o le fatture nel sistema; il Superv
 Comprensione visiva: l'Agente OCR analizza il documento, estrae i campi chiave e li valida.
 
 Biforcazione del flusso:
-Ramo amministrativo: se i dati sono validi, l'Agente RPA genera istantaneamente i file Excel/Word necessari per le pratiche e popola l'ERP.
+Ramo amministrativo: se i dati sono validi, l'Agente APA genera istantaneamente i file Excel/Word necessari per le pratiche e popola l'ERP.
 
 Ramo operativo: l'Agente di Tracking acquisisce l'ID di spedizione e inizia a mappare la posizione della merce.
 

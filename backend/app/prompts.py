@@ -24,7 +24,7 @@ Do not duplicate the same checks in multiple sections. The ESTRAZIONE DELLE RIGH
 In ESITO FINALE, the first line MUST be exactly one of: "CODICE_ESITO: OK", "CODICE_ESITO: WARNING", or "CODICE_ESITO: ERROR".
 """
 
-RPA_PROMPT = """You are the RPA Document Generation Agent. Your task is to read the OCR analysis output of a customs declaration (bolla doganale) and produce a structured JSON that will be used to automatically fill two documents:
+APA_PROMPT = """You are the APA Document Generation Agent. Your task is to read the OCR analysis output of a customs declaration (bolla doganale) and produce a structured JSON that will be used to automatically fill two documents:
 
 1. **autofattura.xlsx** — Sheet "Dettagli Articolo" with the following fields to fill:
    - Row 1: Dettagli Articolo n° (article number), Regime, Cod.Svincolo, Data svincolo, Num A93, Anno A93, Data rilascio, Num. Quietanza, Data quietanza

@@ -193,7 +193,7 @@ def _format_ocr_output(text: str) -> str:
 
 
 
-def semantic_ocr_node(state: AgentState) -> Command[Literal["rpa_document_generation", "__end__"]]:
+def semantic_ocr_node(state: AgentState) -> Command[Literal["apa_document_generation", "__end__"]]:
     """Extracts data from unstructured PDF using a multimodal LLM or standard text LLM with PDF parsing."""
     model = get_chat_model("semantic_ocr", temperature=0.1)
 
@@ -259,5 +259,5 @@ def semantic_ocr_node(state: AgentState) -> Command[Literal["rpa_document_genera
                 f"semantic_ocr input mode: vision-only ({len(image_data_urls)} pages)",
             ]
         },
-        goto="rpa_document_generation"  # Passa i dati OCR all'agente RPA per generazione documenti
+        goto="apa_document_generation"  # Passa i dati OCR all'agente APA per generazione documenti
     )
