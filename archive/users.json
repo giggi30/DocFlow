@@ -20,6 +20,13 @@
       "passwordHash": "38f7ac3abe2fabca0668d23976c12187a1ad4eda549bdd6436d132f665a012b7",
       "salt": "342191c971ec4e2dc9efc9cf5c5cb112",
       "token": "jNKIO5E00abQI0g4htGcRLysGpKUccDBP619La4wHJE"
+    },
+    "test@gmail.com": {
+      "email": "test@gmail.com",
+      "companyName": "Prova Azienda",
+      "passwordHash": "4d2191e93b21969714210983509da62f16d7ba2f1539641be65cf307d882c5ac",
+      "salt": "13fc14ae4473f7d07b861004d6b65c1c",
+      "token": "YI9RKzzTxyhPQczJxYksitjELlcQbYI-RP2xnfIJYnc"
     }
   }
 }

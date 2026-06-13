@@ -127,7 +127,7 @@ export default function DocumentPreviewPanel({
 
     const loadBinary = async () => {
       try {
-        const response = await fetchWithAuth(currentDocument.previewUrl, {
+        const response = await fetchWithAuth(currentDocument.previewUrl!, {
           signal: controller.signal,
         })
         if (!response.ok) {

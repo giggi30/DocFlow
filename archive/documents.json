@@ -12,6 +12,56 @@
           "jobId": "job_2130ffb6e2",
           "filename": "autodichiarazione_google_gemini_srl.docx",
           "path": "test_output/job_2130ffb6e2/autodichiarazione_google_gemini_srl.docx"
+        },
+        {
+          "jobId": "job_35edfa1f83",
+          "filename": "autofattura_google_gemini_srl.xlsx",
+          "path": "test_output/job_35edfa1f83/autofattura_google_gemini_srl.xlsx"
+        },
+        {
+          "jobId": "job_35edfa1f83",
+          "filename": "autodichiarazione_google_gemini_srl.docx",
+          "path": "test_output/job_35edfa1f83/autodichiarazione_google_gemini_srl.docx"
+        },
+        {
+          "jobId": "job_50bd6c3c82",
+          "filename": "autofattura_google_gemini_srl.xlsx",
+          "path": "test_output/job_50bd6c3c82/autofattura_google_gemini_srl.xlsx"
+        },
+        {
+          "jobId": "job_50bd6c3c82",
+          "filename": "autodichiarazione_google_gemini_srl.docx",
+          "path": "test_output/job_50bd6c3c82/autodichiarazione_google_gemini_srl.docx"
+        },
+        {
+          "jobId": "job_7331b62b10",
+          "filename": "autofattura_con_errori_gemini.xlsx",
+          "path": "test_output/job_7331b62b10/autofattura_con_errori_gemini.xlsx"
+        },
+        {
+          "jobId": "job_7331b62b10",
+          "filename": "autodichiarazione_con_errori_gemini.docx",
+          "path": "test_output/job_7331b62b10/autodichiarazione_con_errori_gemini.docx"
+        },
+        {
+          "jobId": "job_6b094fad4d",
+          "filename": "autofattura_google_gemini_srl.xlsx",
+          "path": "test_output/job_6b094fad4d/autofattura_google_gemini_srl.xlsx"
+        },
+        {
+          "jobId": "job_6b094fad4d",
+          "filename": "autodichiarazione_google_gemini_srl.docx",
+          "path": "test_output/job_6b094fad4d/autodichiarazione_google_gemini_srl.docx"
+        },
+        {
+          "jobId": "job_f6f744cc57",
+          "filename": "autofattura_digitale_senza_errori.xlsx",
+          "path": "test_output/job_f6f744cc57/autofattura_digitale_senza_errori.xlsx"
+        },
+        {
+          "jobId": "job_f6f744cc57",
+          "filename": "autodichiarazione_digitale_senza_errori.docx",
+          "path": "test_output/job_f6f744cc57/autodichiarazione_digitale_senza_errori.docx"
         }
       ]
     },
@@ -27,6 +77,36 @@
           "jobId": "job_fe000ac605",
           "filename": "autodichiarazione_chatgpt.docx",
           "path": "test_output/job_fe000ac605/autodichiarazione_chatgpt.docx"
+        }
+      ]
+    },
+    "b1a73bdb3fc16db6": {
+      "companyName": "Prova Azienda",
+      "documents": [
+        {
+          "jobId": "job_a159134065",
+          "filename": "autofattura_perplexity.xlsx",
+          "path": "test_output/job_a159134065/autofattura_perplexity.xlsx"
+        },
+        {
+          "jobId": "job_a159134065",
+          "filename": "autodichiarazione_perplexity.docx",
+          "path": "test_output/job_a159134065/autodichiarazione_perplexity.docx"
+        }
+      ]
+    },
+    "75e2c402bd94ae61": {
+      "companyName": "Unimol",
+      "documents": [
+        {
+          "jobId": "job_b66b35f374",
+          "filename": "autofattura_perplexity.xlsx",
+          "path": "test_output/job_b66b35f374/autofattura_perplexity.xlsx"
+        },
+        {
+          "jobId": "job_b66b35f374",
+          "filename": "autodichiarazione_perplexity.docx",
+          "path": "test_output/job_b66b35f374/autodichiarazione_perplexity.docx"
         }
       ]
     }
