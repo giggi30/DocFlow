@@ -25,8 +25,7 @@ const statusClasses: Record<JobStatus, string> = {
 
 export default function JobStatusCard({ jobId, status, isLoading, error }: JobStatusCardProps) {
   const currentStatus = status?.status
-  const isFlowActive = (!!jobId && currentStatus !== 'completed' && currentStatus !== 'failed') || (isLoading && !jobId)
-  const statusLabel = currentStatus ? statusLabels[currentStatus] : (isLoading ? 'Avvio in corso' : 'In attesa')
+  const statusLabel = currentStatus ? statusLabels[currentStatus] : 'In attesa'
   const statusClass = currentStatus ? statusClasses[currentStatus] : 'status-pill'
   const stepLabel = status?.step ?? '—'
   const statusMessage = (() => {
@@ -52,13 +51,10 @@ export default function JobStatusCard({ jobId, status, isLoading, error }: JobSt
     <div className="page-card">
       <div className="status-card__header">
         <div>
-          <h3>
-            {isFlowActive && <span className="spinner" />}
-            Stato job
-          </h3>
+          <h3>Stato job</h3>
           <p className="muted">Aggiornato ogni 3 secondi finche non termina.</p>
         </div>
-        <span className={statusClass}>{isLoading && !currentStatus ? 'Caricamento' : statusLabel}</span>
+        <span className={statusClass}>{isLoading ? 'Caricamento' : statusLabel}</span>
       </div>
       <div className="status-card__grid">
         <div>

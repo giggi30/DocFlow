@@ -72,6 +72,16 @@
           "jobId": "job_3b37876fed",
           "filename": "autodichiarazione_google_gemini_srl.docx",
           "path": "test_output/job_3b37876fed/autodichiarazione_google_gemini_srl.docx"
+        },
+        {
+          "jobId": "job_b61af55b6d",
+          "filename": "autofattura_google_gemini_srl.xlsx",
+          "path": "test_output/job_b61af55b6d/autofattura_google_gemini_srl.xlsx"
+        },
+        {
+          "jobId": "job_b61af55b6d",
+          "filename": "autodichiarazione_google_gemini_srl.docx",
+          "path": "test_output/job_b61af55b6d/autodichiarazione_google_gemini_srl.docx"
         }
       ]
     },
