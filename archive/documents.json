@@ -62,6 +62,16 @@
           "jobId": "job_f6f744cc57",
           "filename": "autodichiarazione_digitale_senza_errori.docx",
           "path": "test_output/job_f6f744cc57/autodichiarazione_digitale_senza_errori.docx"
+        },
+        {
+          "jobId": "job_3b37876fed",
+          "filename": "autofattura_google_gemini_srl.xlsx",
+          "path": "test_output/job_3b37876fed/autofattura_google_gemini_srl.xlsx"
+        },
+        {
+          "jobId": "job_3b37876fed",
+          "filename": "autodichiarazione_google_gemini_srl.docx",
+          "path": "test_output/job_3b37876fed/autodichiarazione_google_gemini_srl.docx"
         }
       ]
     },

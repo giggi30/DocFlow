@@ -1,0 +1,255 @@
+Index: frontend/src/index.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');\n\n:root {\n  --bg: #f5f1ea;\n  --bg-strong: #ffffff;\n  --sidebar-bg: #f9f6f1;\n  --content-bg: #fdfbf7;\n  --ink: #1f2933;\n  --muted: #6b7280;\n  --line: #e7e0d6;\n  --accent: #0f766e;\n  --accent-soft: rgba(15, 118, 110, 0.12);\n  --accent-ink: #0b4f49;\n  --accent-warm: #e07a5f;\n  --shadow: 0 18px 45px rgba(31, 41, 51, 0.08);\n\n  --font-sans: 'Space Grotesk', 'Helvetica Neue', sans-serif;\n  --font-mono: 'JetBrains Mono', ui-monospace, monospace;\n\n  font-family: var(--font-sans);\n  color: var(--ink);\n  background: var(--bg);\n  text-rendering: optimizeLegibility;\n  -webkit-font-smoothing: antialiased;\n}\n\n* {\n  box-sizing: border-box;\n}\n\nbody {\n  margin: 0;\n  background:\n    radial-gradient(1200px 600px at 80% -20%, rgba(15, 118, 110, 0.18), transparent 60%),\n    radial-gradient(900px 500px at -10% 20%, rgba(224, 122, 95, 0.18), transparent 55%),\n    var(--bg);\n}\n\na {\n  color: inherit;\n  text-decoration: none;\n}\n\n#root {\n  min-height: 100vh;\n}\n\nh1,\nh2 {\n  font-weight: 600;\n  color: var(--ink);\n  margin: 0;\n}\n\n.app-shell {\n  min-height: 100vh;\n  display: grid;\n  grid-template-columns: 260px 1fr;\n  background: var(--content-bg);\n}\n\n.app-sidebar {\n  background: var(--sidebar-bg);\n  border-right: 1px solid var(--line);\n  padding: 24px;\n  display: flex;\n  flex-direction: column;\n  gap: 24px;\n}\n\n.app-brand {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n\n.app-logo {\n  width: 64px;\n  height: 64px;\n  border-radius: 18px;\n  background: transparent;\n  display: grid;\n  place-items: center;\n  overflow: hidden;\n}\n\n.app-logo__image {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n  border-radius: 12px;\n}\n\n.app-name {\n  font-weight: 600;\n  font-size: 18px;\n}\n\n.app-tagline {\n  font-size: 11px;\n  text-transform: uppercase;\n  letter-spacing: 0.16em;\n  color: var(--muted);\n}\n\n.app-nav {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}\n\n.nav-link {\n  padding: 10px 12px;\n  border-radius: 12px;\n  border: 1px solid transparent;\n  transition: all 0.2s ease;\n}\n\n.nav-link:hover {\n  background: rgba(15, 118, 110, 0.08);\n}\n\n.nav-link.is-active {\n  background: var(--accent-soft);\n  border-color: rgba(15, 118, 110, 0.35);\n  color: var(--accent-ink);\n}\n\n.app-sidebar__footer {\n  margin-top: auto;\n  font-size: 12px;\n  color: var(--muted);\n}\n\n.app-main {\n  min-width: 0;\n  display: flex;\n  flex-direction: column;\n  background: var(--content-bg);\n}\n\n.app-header {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 16px;\n  padding: 28px 36px 16px;\n  border-bottom: 1px solid var(--line);\n  background: linear-gradient(120deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.6));\n}\n\n.app-header__eyebrow {\n  font-size: 12px;\n  text-transform: uppercase;\n  letter-spacing: 0.2em;\n  color: var(--muted);\n}\n\n.app-header h1 {\n  margin-top: 6px;\n  font-size: 28px;\n}\n\n.app-header__meta {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n\n.app-header__company {\n  font-size: 13px;\n  font-weight: 600;\n  color: var(--muted);\n}\n\n.app-content {\n  padding: 28px 36px 40px;\n  display: flex;\n  flex-direction: column;\n  gap: 24px;\n  width: min(100%, 1100px);\n  margin: 0 auto;\n}\n\n.page {\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n\n.page-header p {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n\n.page-card {\n  padding: 20px;\n  border-radius: 18px;\n  border: 1px solid var(--line);\n  background: var(--bg-strong);\n  box-shadow: var(--shadow);\n}\n\n.results-card {\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n\n.results-card__header h3 {\n  margin: 0 0 6px;\n}\n\n.results-card > .page-card {\n  padding: 0;\n  border: 0;\n  border-radius: 0;\n  background: transparent;\n  box-shadow: none;\n}\n\n.results-card > .page-card + .page-card {\n  padding-top: 16px;\n  border-top: 1px solid var(--line);\n}\n\n.muted {\n  color: var(--muted);\n}\n\n.upload-panel {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n  margin-top: 16px;\n}\n\n.visually-hidden {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  border: 0;\n}\n\n.dropzone {\n  border: 1px dashed var(--line);\n  border-radius: 18px;\n  padding: 22px;\n  background: rgba(255, 255, 255, 0.7);\n  cursor: pointer;\n  transition: all 0.2s ease;\n}\n\n.dropzone--active {\n  border-color: var(--accent);\n  background: rgba(15, 118, 110, 0.12);\n}\n\n.dropzone__title {\n  margin: 0;\n  font-weight: 600;\n}\n\n.dropzone__hint {\n  margin: 6px 0 0;\n  color: var(--muted);\n  font-size: 14px;\n}\n\n.file-meta {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 12px;\n  font-size: 14px;\n}\n\n.file-name {\n  font-weight: 500;\n}\n\n.status-pill {\n  padding: 4px 10px;\n  border-radius: 999px;\n  font-size: 12px;\n  background: var(--content-bg);\n  border: 1px solid var(--line);\n}\n\n.status-pill--ready {\n  background: rgba(15, 118, 110, 0.08);\n  border-color: rgba(15, 118, 110, 0.3);\n  color: var(--accent-ink);\n}\n\n.status-pill--queued {\n  background: rgba(59, 130, 246, 0.12);\n  border-color: rgba(59, 130, 246, 0.4);\n  color: #1d4ed8;\n}\n\n.status-pill--running {\n  background: rgba(234, 179, 8, 0.18);\n  border-color: rgba(234, 179, 8, 0.5);\n  color: #b45309;\n}\n\n.status-pill--review {\n  background: rgba(248, 113, 113, 0.14);\n  border-color: rgba(185, 28, 28, 0.45);\n  color: #991b1b;\n}\n\n.status-pill--uploading {\n  background: rgba(224, 122, 95, 0.12);\n  border-color: rgba(224, 122, 95, 0.45);\n  color: #b45309;\n}\n\n.status-pill--success {\n  background: rgba(15, 118, 110, 0.16);\n  border-color: rgba(15, 118, 110, 0.4);\n  color: var(--accent-ink);\n}\n\n.status-pill--error {\n  background: rgba(239, 68, 68, 0.14);\n  border-color: rgba(239, 68, 68, 0.45);\n  color: #b91c1c;\n}\n\n.status-card__header {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 12px;\n  margin-bottom: 12px;\n}\n\n.status-card__grid {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 12px;\n  margin-bottom: 12px;\n}\n\n.status-card__label {\n  display: block;\n  font-size: 11px;\n  text-transform: uppercase;\n  letter-spacing: 0.12em;\n  color: var(--muted);\n  margin-bottom: 6px;\n}\n\n.status-card__value {\n  font-family: var(--font-mono);\n  font-size: 13px;\n  color: var(--ink);\n}\n\n.error-text {\n  margin: 0;\n  font-size: 13px;\n  color: #b91c1c;\n}\n\n.success-text {\n  margin: 0;\n  font-size: 13px;\n  color: var(--accent-ink);\n}\n\n.empty-state {\n  padding: 16px;\n  border: 1px dashed var(--line);\n  border-radius: 12px;\n  background: var(--content-bg);\n}\n\n.empty-state--error {\n  border-color: rgba(239, 68, 68, 0.35);\n  background: rgba(239, 68, 68, 0.06);\n}\n\n.empty-state__title {\n  margin: 0 0 6px;\n  font-weight: 600;\n}\n\n.empty-state .button-secondary {\n  margin-top: 12px;\n}\n\n.upload-actions {\n  display: flex;\n  justify-content: flex-end;\n}\n\n.job-actions {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 12px;\n  flex-wrap: wrap;\n}\n\n.job-actions__hint {\n  font-size: 13px;\n  color: var(--muted);\n}\n\n.ocr-banner {\n  display: grid;\n  grid-template-columns: auto minmax(0, 1fr) auto;\n  gap: 12px;\n  align-items: center;\n  padding: 14px 16px;\n  border-radius: 12px;\n  border: 1px solid;\n}\n\n.ocr-warning {\n  border-color: rgba(180, 83, 9, 0.35);\n  background: rgba(234, 179, 8, 0.12);\n  color: #7c2d12;\n}\n\n.ocr-error {\n  border-color: rgba(185, 28, 28, 0.45);\n  background: rgba(248, 113, 113, 0.14);\n  color: #7f1d1d;\n}\n\n.ocr-banner__icon {\n  width: 26px;\n  height: 26px;\n  border-radius: 999px;\n  display: grid;\n  place-items: center;\n  background: #b45309;\n  color: #ffffff;\n  font-weight: 700;\n  line-height: 1;\n}\n\n.ocr-error .ocr-banner__icon {\n  background: #b91c1c;\n}\n\n.ocr-banner__title {\n  margin: 0 0 4px;\n  font-weight: 700;\n}\n\n.ocr-banner__text {\n  margin: 0;\n  font-size: 13px;\n  line-height: 1.45;\n}\n\n.ocr-banner__error {\n  margin: 8px 0 0;\n  font-size: 13px;\n  font-weight: 600;\n}\n\n.ocr-error__action {\n  border: none;\n  border-radius: 12px;\n  padding: 10px 16px;\n  background: #b91c1c;\n  color: #ffffff;\n  font-family: var(--font-sans);\n  font-weight: 700;\n  white-space: nowrap;\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(185, 28, 28, 0.18);\n  transition: transform 0.2s ease, box-shadow 0.2s ease;\n}\n\n.ocr-error__action:hover {\n  transform: translateY(-1px);\n  box-shadow: 0 14px 24px rgba(185, 28, 28, 0.22);\n}\n\n.ocr-error__action:disabled {\n  cursor: not-allowed;\n  opacity: 0.65;\n  box-shadow: none;\n  transform: none;\n}\n\n.ocr-panel__header {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 12px;\n  flex-wrap: wrap;\n  margin-bottom: 12px;\n}\n\n.ocr-panel__content {\n  padding: 14px;\n  border-radius: 12px;\n  border: 1px solid var(--line);\n  background: var(--content-bg);\n  max-height: 320px;\n  overflow: auto;\n  min-height: 120px;\n}\n\n.ocr-panel__content--warning {\n  border-color: rgba(180, 83, 9, 0.35);\n  background: rgba(234, 179, 8, 0.08);\n}\n\n.ocr-panel__content--error {\n  border-color: rgba(185, 28, 28, 0.45);\n  background: rgba(248, 113, 113, 0.1);\n  color: #7f1d1d;\n}\n\n.ocr-panel__content pre {\n  margin: 0;\n  white-space: pre-wrap;\n  font-family: var(--font-mono);\n  font-size: 13px;\n  line-height: 1.5;\n}\n\n.artifacts-list {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n}\n\n.artifacts-item {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 12px;\n  padding: 12px 14px;\n  border-radius: 12px;\n  border: 1px solid var(--line);\n  background: var(--content-bg);\n}\n\n.artifacts-name {\n  margin: 0 0 4px;\n  font-weight: 600;\n}\n\n.artifacts-actions {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  gap: 8px;\n  flex-wrap: wrap;\n}\n\n.preview-modal {\n  position: fixed;\n  inset: 0;\n  z-index: 50;\n  display: grid;\n  place-items: center;\n  padding: 16px;\n}\n\n.preview-modal__backdrop {\n  position: absolute;\n  inset: 0;\n  background: rgba(31, 41, 51, 0.48);\n}\n\n.preview-modal__content {\n  position: relative;\n  z-index: 1;\n  width: calc(100vw - 32px);\n  height: calc(100vh - 32px);\n  max-width: 1480px;\n  overflow: hidden;\n  border-radius: 18px;\n  background: var(--bg-strong);\n  box-shadow: 0 24px 70px rgba(31, 41, 51, 0.24);\n}\n\n.preview-modal__content .document-preview {\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n  border: 0;\n  border-radius: 18px;\n}\n\n.preview-modal__content .document-preview__header {\n  padding-right: 84px;\n  flex-shrink: 0;\n}\n\n.preview-modal__content .document-preview__body {\n  flex: 1;\n  min-height: 0;\n}\n\n.preview-modal__content .document-preview__pdf,\n.preview-modal__content .document-preview__office {\n  height: 100%;\n}\n\n.preview-modal__content .document-preview__image,\n.preview-modal__content .document-preview__text {\n  max-height: 100%;\n}\n\n.preview-modal__close {\n  position: absolute;\n  top: 16px;\n  right: 16px;\n  z-index: 2;\n  border: 1px solid var(--line);\n  border-radius: 999px;\n  padding: 7px 12px;\n  background: #ffffff;\n  color: var(--accent-ink);\n  font-family: var(--font-sans);\n  font-weight: 700;\n  cursor: pointer;\n}\n\n.archive-toolbar {\n  display: flex;\n  align-items: flex-start;\n  justify-content: space-between;\n  gap: 16px;\n  flex-wrap: wrap;\n  margin-bottom: 18px;\n}\n\n.archive-toolbar h3,\n.archive-detail h3 {\n  margin: 0 0 6px;\n}\n\n.archive-filters {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  flex-wrap: wrap;\n}\n\n.archive-filter {\n  border: 1px solid var(--line);\n  border-radius: 999px;\n  padding: 7px 12px;\n  background: #ffffff;\n  color: var(--muted);\n  font-family: var(--font-sans);\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.2s ease;\n}\n\n.archive-filter:hover {\n  border-color: rgba(15, 118, 110, 0.35);\n  color: var(--accent-ink);\n}\n\n.archive-filter--active {\n  background: var(--accent-soft);\n  border-color: rgba(15, 118, 110, 0.35);\n  color: var(--accent-ink);\n}\n\n.archive-layout {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) 400px;\n  gap: 16px;\n  align-items: start;\n}\n\n.archive-table {\n  overflow: hidden;\n  border: 1px solid var(--line);\n  border-radius: 12px;\n  background: var(--content-bg);\n}\n\n.archive-row {\n  display: grid;\n  grid-template-columns: minmax(200px, 2fr) 110px 120px;\n  gap: 12px;\n  align-items: center;\n  width: 100%;\n  padding: 12px 14px;\n  text-align: left;\n}\n\n.archive-row--head {\n  background: rgba(255, 255, 255, 0.7);\n  color: var(--muted);\n  font-size: 11px;\n  font-weight: 700;\n  letter-spacing: 0.12em;\n  text-transform: uppercase;\n}\n\n.archive-row--item {\n  border: 0;\n  border-top: 1px solid var(--line);\n  background: transparent;\n  color: var(--ink);\n  cursor: pointer;\n  font-family: var(--font-sans);\n  font-size: 14px;\n  transition: background 0.2s ease;\n}\n\n.archive-row--item:hover,\n.archive-row--selected {\n  background: rgba(15, 118, 110, 0.08);\n}\n\n.archive-name {\n  font-weight: 600;\n  overflow-wrap: anywhere;\n}\n\n.archive-detail {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n}\n\n.archive-detail__meta {\n  padding: 16px;\n  border: 1px solid var(--line);\n  border-radius: 12px;\n  background: var(--content-bg);\n}\n\n.archive-detail__list {\n  margin: 12px 0 0;\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n}\n\n.archive-detail__list div {\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n}\n\n.archive-detail__list dt {\n  color: var(--muted);\n  font-size: 11px;\n  font-weight: 700;\n  letter-spacing: 0.12em;\n  text-transform: uppercase;\n}\n\n.archive-detail__list dd {\n  margin: 0;\n  overflow-wrap: anywhere;\n}\n\n.archive-empty {\n  padding: 18px;\n  border: 1px dashed var(--line);\n  border-radius: 12px;\n  background: var(--content-bg);\n}\n\n.archive-empty--compact {\n  margin: 14px;\n}\n\n.archive-empty__title {\n  margin: 0 0 6px;\n  font-weight: 600;\n}\n\n.document-preview {\n  padding: 16px;\n  border: 1px solid var(--line);\n  border-radius: 12px;\n  background: var(--content-bg);\n}\n\n.document-preview__header {\n  display: flex;\n  align-items: flex-start;\n  justify-content: space-between;\n  gap: 12px;\n  margin-bottom: 12px;\n  min-width: 0;\n}\n\n.document-preview__header h3 {\n  margin: 0 0 6px;\n}\n\n.document-preview__header > div {\n  min-width: 0;\n}\n\n.document-preview__header .button-secondary {\n  flex: 0 0 auto;\n}\n\n.document-preview__name {\n  margin: 0 0 4px;\n  font-weight: 600;\n  overflow-wrap: anywhere;\n}\n\n.document-preview__body {\n  min-height: 280px;\n  border: 1px solid var(--line);\n  border-radius: 12px;\n  background: #ffffff;\n  overflow: hidden;\n}\n\n.document-preview__pdf {\n  display: block;\n  width: 100%;\n  height: 420px;\n  border: 0;\n}\n\n.document-preview__office {\n  display: block;\n  width: 100%;\n  height: 420px;\n  border: 0;\n  background: #ffffff;\n}\n\n.document-preview__image {\n  display: block;\n  width: 100%;\n  max-height: 420px;\n  object-fit: contain;\n  background: var(--content-bg);\n}\n\n.document-preview__text {\n  max-height: 420px;\n  min-height: 280px;\n  overflow: auto;\n  padding: 14px;\n}\n\n.document-preview__text pre {\n  margin: 0;\n  white-space: pre-wrap;\n  font-family: var(--font-mono);\n  font-size: 13px;\n  line-height: 1.5;\n}\n\n.document-preview__fallback {\n  padding: 18px;\n}\n\n.archive-detail .document-preview__header {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr);\n  gap: 10px;\n}\n\n.archive-detail .document-preview__header .button-secondary {\n  justify-self: start;\n}\n\n.archive-detail .document-preview__body {\n  min-height: 360px;\n}\n\n.archive-detail .document-preview__pdf,\n.archive-detail .document-preview__office {\n  height: 360px;\n}\n\n.archive-detail .document-preview__text {\n  min-height: 360px;\n  max-height: 360px;\n}\n\n.button-secondary {\n  border: 1px solid var(--line);\n  border-radius: 12px;\n  padding: 8px 14px;\n  background: #ffffff;\n  color: var(--accent-ink);\n  font-weight: 600;\n  cursor: pointer;\n  text-decoration: none;\n  transition: transform 0.2s ease, box-shadow 0.2s ease;\n  font-family: var(--font-sans);\n}\n\n.button-secondary:hover {\n  transform: translateY(-1px);\n  box-shadow: 0 10px 20px rgba(15, 118, 110, 0.12);\n}\n\n.button-secondary:disabled {\n  cursor: not-allowed;\n  opacity: 0.6;\n  box-shadow: none;\n  transform: none;\n}\n\n.button-primary {\n  border: none;\n  border-radius: 12px;\n  padding: 10px 18px;\n  background: var(--accent);\n  color: #ffffff;\n  font-weight: 600;\n  cursor: pointer;\n  transition: transform 0.2s ease, box-shadow 0.2s ease;\n  box-shadow: 0 10px 20px rgba(15, 118, 110, 0.2);\n}\n\n.button-primary:hover {\n  transform: translateY(-1px);\n}\n\n.button-primary:disabled {\n  cursor: not-allowed;\n  opacity: 0.6;\n  box-shadow: none;\n}\n\n.file-id {\n  margin-top: 12px;\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  padding: 12px 14px;\n  border-radius: 12px;\n  border: 1px solid var(--line);\n  background: var(--content-bg);\n  font-family: var(--font-mono);\n  font-size: 13px;\n}\n\n.file-id__label {\n  text-transform: uppercase;\n  letter-spacing: 0.12em;\n  font-size: 11px;\n  color: var(--muted);\n}\n\n.file-id__value {\n  color: var(--ink);\n}\n\n.dashboard-meta {\n  margin-top: 16px;\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 12px;\n  padding: 12px 14px;\n  border-radius: 12px;\n  border: 1px solid var(--line);\n  background: var(--content-bg);\n}\n\n.login-shell {\n  min-height: 100vh;\n  display: grid;\n  place-items: center;\n  padding: 32px 20px;\n}\n\n.login-card {\n  width: min(100%, 440px);\n  padding: 28px;\n  border-radius: 18px;\n  border: 1px solid var(--line);\n  background: var(--bg-strong);\n  box-shadow: var(--shadow);\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n\n.login-header h1 {\n  margin: 6px 0 0;\n  font-size: 26px;\n}\n\n.login-header p {\n  margin: 8px 0 0;\n  color: var(--muted);\n}\n\n.login-eyebrow {\n  font-size: 11px;\n  text-transform: uppercase;\n  letter-spacing: 0.18em;\n  color: var(--muted);\n}\n\n.login-form {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n}\n\n.login-field {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n\n.login-field label {\n  font-size: 11px;\n  text-transform: uppercase;\n  letter-spacing: 0.12em;\n  color: var(--muted);\n  font-weight: 700;\n}\n\n.login-field input {\n  border: 1px solid var(--line);\n  border-radius: 12px;\n  padding: 10px 12px;\n  font-family: var(--font-sans);\n  font-size: 14px;\n  background: #ffffff;\n  color: var(--ink);\n}\n\n.login-field input:focus {\n  outline: 2px solid rgba(15, 118, 110, 0.28);\n  outline-offset: 2px;\n}\n\n.login-actions {\n  display: flex;\n  justify-content: flex-end;\n  margin-top: 4px;\n}\n\n.login-footer {\n  margin: 4px 0 0;\n  font-size: 12px;\n  color: var(--muted);\n}\n\n.login-footer a {\n  color: var(--accent);\n  font-weight: 600;\n}\n\n.login-footer a:hover {\n  text-decoration: underline;\n}\n\n@media (max-width: 960px) {\n  .app-shell {\n    grid-template-columns: 1fr;\n  }\n\n  .app-sidebar {\n    flex-direction: row;\n    align-items: center;\n    justify-content: space-between;\n    border-right: none;\n    border-bottom: 1px solid var(--line);\n  }\n\n  .app-nav {\n    flex-direction: row;\n    flex-wrap: wrap;\n  }\n}\n\n@media (max-width: 640px) {\n  .app-header {\n    flex-direction: column;\n    align-items: flex-start;\n    gap: 12px;\n  }\n\n  .app-sidebar {\n    flex-direction: column;\n    align-items: flex-start;\n  }\n\n  .app-nav {\n    width: 100%;\n    flex-direction: column;\n  }\n\n  .job-actions {\n    align-items: flex-start;\n  }\n\n  .ocr-panel__header {\n    align-items: flex-start;\n  }\n\n  .ocr-banner {\n    grid-template-columns: auto minmax(0, 1fr);\n    align-items: flex-start;\n  }\n\n  .ocr-error__action {\n    grid-column: 1 / -1;\n    width: 100%;\n  }\n\n  .status-card__grid {\n    grid-template-columns: 1fr;\n  }\n\n  .dashboard-meta {\n    grid-template-columns: 1fr;\n  }\n\n  .archive-layout {\n    grid-template-columns: 1fr;\n  }\n\n  .archive-row {\n    grid-template-columns: 1fr;\n    gap: 6px;\n  }\n\n  .archive-row--head {\n    display: none;\n  }\n\n  .archive-row--item span {\n    display: grid;\n    grid-template-columns: 96px minmax(0, 1fr);\n    gap: 8px;\n  }\n\n  .archive-row--item span::before {\n    content: attr(data-label);\n    color: var(--muted);\n    font-size: 11px;\n    font-weight: 700;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n  }\n}\n\n.file-preview-card {\n  border: 1px solid var(--line);\n  border-radius: 18px;\n  padding: 20px;\n  background: var(--bg-strong);\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 20px;\n  box-shadow: var(--shadow);\n  position: relative;\n  transition: border-color 0.2s ease, box-shadow 0.2s ease;\n}\n\n.file-preview-card:hover {\n  border-color: rgba(15, 118, 110, 0.3);\n}\n\n.file-preview-card__left {\n  display: flex;\n  align-items: center;\n  gap: 20px;\n  min-width: 0;\n  flex: 1;\n}\n\n.file-preview-card__thumbnail-wrapper {\n  width: 100px;\n  height: 130px;\n  border-radius: 12px;\n  overflow: hidden;\n  position: relative;\n  border: 1px solid var(--line);\n  background: #fdfdfd;\n  cursor: pointer;\n  flex-shrink: 0;\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);\n}\n\n.file-preview-card__thumbnail-iframe {\n  width: 100%;\n  height: 100%;\n  border: none;\n  pointer-events: none;\n  background: #ffffff;\n}\n\n.file-preview-card__thumbnail-fallback {\n  position: absolute;\n  inset: 0;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  background: linear-gradient(135deg, #fdfbf7, #f5f1ea);\n  color: var(--accent-warm);\n}\n\n.file-preview-card__thumbnail-fallback-icon {\n  font-size: 32px;\n  margin-bottom: 4px;\n}\n\n.file-preview-card__thumbnail-fallback-text {\n  font-size: 10px;\n  text-transform: uppercase;\n  font-weight: 700;\n  letter-spacing: 0.05em;\n  color: var(--muted);\n}\n\n.file-preview-card__thumbnail-blocker {\n  position: absolute;\n  inset: 0;\n  z-index: 10;\n  background: rgba(0, 0, 0, 0);\n  cursor: pointer;\n}\n\n.file-preview-card__thumbnail-overlay {\n  position: absolute;\n  inset: 0;\n  z-index: 20;\n  background: rgba(15, 118, 110, 0.08);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  opacity: 0;\n  transition: opacity 0.2s ease, background-color 0.2s ease;\n  pointer-events: none;\n}\n\n.file-preview-card__thumbnail-wrapper:hover .file-preview-card__thumbnail-overlay {\n  opacity: 1;\n  background: rgba(15, 118, 110, 0.25);\n}\n\n.file-preview-card__zoom-icon {\n  background: #ffffff;\n  color: var(--accent-ink);\n  width: 36px;\n  height: 36px;\n  border-radius: 50%;\n  display: grid;\n  place-items: center;\n  font-size: 18px;\n  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);\n  transform: scale(0.85);\n  transition: transform 0.2s ease;\n}\n\n.file-preview-card__thumbnail-wrapper:hover .file-preview-card__zoom-icon {\n  transform: scale(1);\n}\n\n.file-preview-card__details {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  min-width: 0;\n  flex: 1;\n}\n\n.file-preview-card__name {\n  font-weight: 600;\n  font-size: 16px;\n  color: var(--ink);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.file-preview-card__meta {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  flex-wrap: wrap;\n}\n\n.file-preview-card__size {\n  font-size: 13px;\n  color: var(--muted);\n}\n\n.file-preview-card__actions {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  margin-top: 4px;\n}\n\n.button-link-danger {\n  background: none;\n  border: none;\n  padding: 0;\n  color: #b91c1c;\n  font-family: var(--font-sans);\n  font-size: 13px;\n  font-weight: 600;\n  cursor: pointer;\n  text-decoration: underline;\n  transition: color 0.2s ease;\n}\n\n.button-link-danger:hover {\n  color: #991b1b;\n}\n\n.button-link-danger:disabled {\n  color: var(--muted);\n  cursor: not-allowed;\n  text-decoration: none;\n}\n\n@media (max-width: 640px) {\n  .file-preview-card {\n    flex-direction: column;\n    align-items: stretch;\n    gap: 16px;\n  }\n  .file-preview-card__left {\n    flex-direction: column;\n    align-items: center;\n    text-align: center;\n  }\n  .file-preview-card__details {\n    align-items: center;\n    width: 100%;\n  }\n  .file-preview-card__meta {\n    justify-content: center;\n  }\n  .file-preview-card__name {\n    text-align: center;\n    width: 100%;\n  }\n}\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/index.css b/frontend/src/index.css
+--- a/frontend/src/index.css	(revision a841979156d66ec7340328684b8417d8eedb6054)
++++ b/frontend/src/index.css	(date 1781437373586)
+@@ -1357,3 +1357,39 @@
+   }
+ }
+ 
++.spinner {
++  display: inline-block;
++  width: 12px;
++  height: 12px;
++  border: 2px solid currentColor;
++  border-right-color: transparent;
++  border-radius: 50%;
++  animation: spin 0.75s linear infinite;
++  margin-right: 6px;
++  flex-shrink: 0;
++  vertical-align: middle;
++}
++
++.spinner--large {
++  width: 28px;
++  height: 28px;
++  border-width: 3px;
++  margin-right: 0;
++  margin-bottom: 12px;
++  color: var(--accent);
++}
++
++.empty-state__spinner-wrapper {
++  display: flex;
++  justify-content: center;
++  align-items: center;
++  margin-bottom: 8px;
++}
++
++@keyframes spin {
++  to {
++    transform: rotate(360deg);
++  }
++}
++
++
+Index: frontend/src/pages/DashboardPage.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import JobArtifactsList from '../components/JobArtifactsList'\nimport JobStatusCard from '../components/JobStatusCard'\nimport OcrSummaryPanel from '../components/OcrSummaryPanel'\nimport UploadDropzone from '../components/UploadDropzone'\nimport useDashboardFlow from '../hooks/useDashboardFlow'\n\nexport default function DashboardPage() {\n  const {\n    fileId,\n    jobId,\n    jobStatus,\n    isPolling,\n    pollingError,\n    isStarting,\n    jobError,\n    analyzePdf,\n    continueGeneration,\n    isContinuingGeneration,\n    continueGenerationError,\n  } = useDashboardFlow()\n\n  return (\n    <section className=\"page\">\n      <div className=\"page-header\">\n        <h2>Dashboard</h2>\n        <p>Carica una bolla doganale e avvia il flusso.</p>\n      </div>\n      <div className=\"page-card\">\n        <h3>Upload PDF</h3>\n        <p className=\"muted\">\n          Seleziona una bolla doganale PDF: il sistema la carica e avvia\n          subito l analisi.\n        </p>\n        <UploadDropzone\n          isAnalyzing={isStarting}\n          error={jobError}\n          onAnalyze={analyzePdf}\n        />\n        {(fileId || jobId) && (\n          <div className=\"dashboard-meta\">\n            <div>\n              <span className=\"status-card__label\">fileId</span>\n              <span className=\"status-card__value\">{fileId ?? '—'}</span>\n            </div>\n            <div>\n              <span className=\"status-card__label\">jobId</span>\n              <span className=\"status-card__value\">{jobId ?? '—'}</span>\n            </div>\n          </div>\n        )}\n      </div>\n      <JobStatusCard\n        jobId={jobId}\n        status={jobStatus}\n        isLoading={isPolling}\n        error={pollingError}\n      />\n      <div className=\"page-card results-card\">\n        <div className=\"results-card__header\">\n          <h3>Risultati</h3>\n          <p className=\"muted\">\n            Riepilogo OCR e documenti generati vengono mostrati appena pronti.\n          </p>\n        </div>\n        <OcrSummaryPanel\n          jobId={jobId}\n          status={jobStatus?.status ?? null}\n          isContinuingGeneration={isContinuingGeneration}\n          continueGenerationError={continueGenerationError}\n          onContinueGeneration={continueGeneration}\n        />\n        <JobArtifactsList jobId={jobId} status={jobStatus?.status ?? null} />\n      </div>\n    </section>\n  )\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/pages/DashboardPage.tsx b/frontend/src/pages/DashboardPage.tsx
+--- a/frontend/src/pages/DashboardPage.tsx	(revision a841979156d66ec7340328684b8417d8eedb6054)
++++ b/frontend/src/pages/DashboardPage.tsx	(date 1781437805613)
+@@ -17,6 +17,9 @@
+     continueGeneration,
+     isContinuingGeneration,
+     continueGenerationError,
++    ocrSummary,
++    ocrReviewLevel,
++    ocrError,
+   } = useDashboardFlow()
+ 
+   return (
+@@ -52,7 +55,7 @@
+       <JobStatusCard
+         jobId={jobId}
+         status={jobStatus}
+-        isLoading={isPolling}
++        isLoading={isPolling || isStarting}
+         error={pollingError}
+       />
+       <div className="page-card results-card">
+@@ -68,8 +71,15 @@
+           isContinuingGeneration={isContinuingGeneration}
+           continueGenerationError={continueGenerationError}
+           onContinueGeneration={continueGeneration}
++          summary={ocrSummary}
++          reviewLevel={ocrReviewLevel}
++          error={ocrError}
+         />
+-        <JobArtifactsList jobId={jobId} status={jobStatus?.status ?? null} />
++        <JobArtifactsList
++          jobId={jobId}
++          status={jobStatus?.status ?? null}
++          ocrSummary={ocrSummary}
++        />
+       </div>
+     </section>
+   )
+Index: frontend/src/context/DashboardFlowProvider.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { type ReactNode, useCallback, useMemo, useState } from 'react'\nimport { continueDocumentGeneration, startJob } from '../api/jobs'\nimport { uploadPdf } from '../api/upload'\nimport { DashboardFlowContext } from './dashboardFlowContext'\nimport useJobPolling from '../hooks/useJobPolling'\n\ntype DashboardFlowProviderProps = {\n  children: ReactNode\n}\n\nexport function DashboardFlowProvider({\n  children,\n}: DashboardFlowProviderProps) {\n  const [fileId, setFileId] = useState<string | null>(null)\n  const [jobId, setJobId] = useState<string | null>(null)\n  const [isStarting, setIsStarting] = useState(false)\n  const [isContinuingGeneration, setIsContinuingGeneration] = useState(false)\n  const [continueGenerationError, setContinueGenerationError] = useState<string | null>(null)\n  const [pollingRefreshKey, setPollingRefreshKey] = useState(0)\n  const [jobError, setJobError] = useState<string | null>(null)\n  const { data: jobStatus, isLoading: isPolling, error: pollingError } =\n    useJobPolling(jobId, pollingRefreshKey)\n\n  const analyzePdf = useCallback(async (file: File) => {\n    setIsStarting(true)\n    setJobError(null)\n    setContinueGenerationError(null)\n    setFileId(null)\n    setJobId(null)\n\n    try {\n      const { fileId: nextFileId } = await uploadPdf(file)\n      setFileId(nextFileId)\n      const { jobId: nextJobId } = await startJob(nextFileId)\n      setJobId(nextJobId)\n    } catch {\n      setFileId(null)\n      setJobId(null)\n      setJobError('Analisi non riuscita. Verifica il PDF e riprova.')\n    } finally {\n      setIsStarting(false)\n    }\n  }, [])\n\n  const continueGeneration = useCallback(async () => {\n    if (!jobId) {\n      return\n    }\n\n    setIsContinuingGeneration(true)\n    setContinueGenerationError(null)\n\n    try {\n      await continueDocumentGeneration(jobId)\n      setPollingRefreshKey((current) => current + 1)\n    } catch {\n      setContinueGenerationError('Generazione documenti non avviata. Riprova.')\n    } finally {\n      setIsContinuingGeneration(false)\n    }\n  }, [jobId])\n\n  const value = useMemo(\n    () => ({\n      fileId,\n      jobId,\n      jobStatus,\n      isPolling,\n      pollingError,\n      isStarting,\n      jobError,\n      analyzePdf,\n      continueGeneration,\n      isContinuingGeneration,\n      continueGenerationError,\n    }),\n    [\n      fileId,\n      jobId,\n      jobStatus,\n      isPolling,\n      pollingError,\n      isStarting,\n      jobError,\n      analyzePdf,\n      continueGeneration,\n      isContinuingGeneration,\n      continueGenerationError,\n    ],\n  )\n\n  return (\n    <DashboardFlowContext.Provider value={value}>\n      {children}\n    </DashboardFlowContext.Provider>\n  )\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/context/DashboardFlowProvider.tsx b/frontend/src/context/DashboardFlowProvider.tsx
+--- a/frontend/src/context/DashboardFlowProvider.tsx	(revision a841979156d66ec7340328684b8417d8eedb6054)
++++ b/frontend/src/context/DashboardFlowProvider.tsx	(date 1781457270984)
+@@ -1,5 +1,5 @@
+-import { type ReactNode, useCallback, useMemo, useState } from 'react'
+-import { continueDocumentGeneration, startJob } from '../api/jobs'
++import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
++import { continueDocumentGeneration, getOcrSummary, startJob } from '../api/jobs'
+ import { uploadPdf } from '../api/upload'
+ import { DashboardFlowContext } from './dashboardFlowContext'
+ import useJobPolling from '../hooks/useJobPolling'
+@@ -21,12 +21,97 @@
+   const { data: jobStatus, isLoading: isPolling, error: pollingError } =
+     useJobPolling(jobId, pollingRefreshKey)
+ 
++  const [ocrSummary, setOcrSummary] = useState<string | null>(null)
++  const [ocrReviewLevel, setOcrReviewLevel] = useState<'none' | 'warning' | 'error' | null>(null)
++  const [isOcrLoading, setIsOcrLoading] = useState(false)
++  const [ocrError, setOcrError] = useState<string | null>(null)
++
++  useEffect(() => {
++    if (!jobId) {
++      setOcrSummary(null)
++      setOcrReviewLevel(null)
++      setIsOcrLoading(false)
++      setOcrError(null)
++      return
++    }
++
++    let isActive = true
++    let intervalId: number | undefined
++
++    const loadSummary = async (isInitial = false) => {
++      if (!isActive) {
++        return
++      }
++
++      if (isInitial) {
++        setIsOcrLoading(true)
++        setOcrSummary(null)
++        setOcrReviewLevel(null)
++        setOcrError(null)
++      }
++
++      try {
++        const data = await getOcrSummary(jobId)
++        if (!isActive) {
++          return
++        }
++        const nextText = data.text ?? ''
++        const nextReviewLevel = data.reviewLevel ?? null
++
++        if (nextText) {
++          setOcrSummary(nextText)
++          if (intervalId) {
++            window.clearInterval(intervalId)
++          }
++        } else if (jobStatus?.status === 'completed' || jobStatus?.status === 'review_required') {
++          // Se il job è terminato ma non c'è testo, settiamo stringa vuota per interrompere lo stato di caricamento
++          setOcrSummary('')
++          if (intervalId) {
++            window.clearInterval(intervalId)
++          }
++        }
++        setOcrReviewLevel(nextReviewLevel)
++        setOcrError(null)
++      } catch {
++        if (!isActive) {
++          return
++        }
++        if (jobStatus?.status === 'failed') {
++          setOcrError('OCR non disponibile: il job e fallito.')
++          if (intervalId) {
++            window.clearInterval(intervalId)
++          }
++        }
++      } finally {
++        if (isActive && isInitial) {
++          setIsOcrLoading(false)
++        }
++      }
++    }
++
++    if (jobStatus?.status !== 'failed') {
++      intervalId = window.setInterval(() => loadSummary(false), 3000)
++    }
++    loadSummary(true)
++
++    return () => {
++      isActive = false
++      if (intervalId) {
++        window.clearInterval(intervalId)
++      }
++    }
++  }, [jobId, jobStatus?.status])
++
+   const analyzePdf = useCallback(async (file: File) => {
+     setIsStarting(true)
+     setJobError(null)
+     setContinueGenerationError(null)
+     setFileId(null)
+     setJobId(null)
++    setOcrSummary(null)
++    setOcrReviewLevel(null)
++    setOcrError(null)
++    setIsOcrLoading(false)
+ 
+     try {
+       const { fileId: nextFileId } = await uploadPdf(file)
+@@ -73,6 +158,10 @@
+       continueGeneration,
+       isContinuingGeneration,
+       continueGenerationError,
++      ocrSummary,
++      ocrReviewLevel,
++      isOcrLoading,
++      ocrError,
+     }),
+     [
+       fileId,
+@@ -86,6 +175,10 @@
+       continueGeneration,
+       isContinuingGeneration,
+       continueGenerationError,
++      ocrSummary,
++      ocrReviewLevel,
++      isOcrLoading,
++      ocrError,
+     ],
+   )
+ 
+Index: frontend/src/context/dashboardFlowContext.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { createContext } from 'react'\nimport type { JobStatusResponse } from '../types/job'\n\nexport type DashboardFlowContextValue = {\n  fileId: string | null\n  jobId: string | null\n  jobStatus: JobStatusResponse | null\n  isPolling: boolean\n  pollingError: string | null\n  isStarting: boolean\n  jobError: string | null\n  analyzePdf: (file: File) => Promise<void>\n  continueGeneration: () => Promise<void>\n  isContinuingGeneration: boolean\n  continueGenerationError: string | null\n}\n\nexport const DashboardFlowContext =\n  createContext<DashboardFlowContextValue | null>(null)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/context/dashboardFlowContext.ts b/frontend/src/context/dashboardFlowContext.ts
+--- a/frontend/src/context/dashboardFlowContext.ts	(revision a841979156d66ec7340328684b8417d8eedb6054)
++++ b/frontend/src/context/dashboardFlowContext.ts	(date 1781437381882)
+@@ -13,6 +13,10 @@
+   continueGeneration: () => Promise<void>
+   isContinuingGeneration: boolean
+   continueGenerationError: string | null
++  ocrSummary: string | null
++  ocrReviewLevel: 'none' | 'warning' | 'error' | null
++  isOcrLoading: boolean
++  ocrError: string | null
+ }
+ 
+ export const DashboardFlowContext =

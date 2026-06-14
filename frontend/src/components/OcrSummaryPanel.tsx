@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { getOcrSummary } from '../api/jobs'
 import type { JobStatus } from '../types/job'
 
 type OcrSummaryPanelProps = {
@@ -8,6 +7,9 @@ type OcrSummaryPanelProps = {
   isContinuingGeneration: boolean
   continueGenerationError: string | null
   onContinueGeneration: () => Promise<void>
+  summary: string | null
+  reviewLevel: ReviewLevel | null
+  error: string | null
 }
 
 type ReviewLevel = 'none' | 'warning' | 'error'
@@ -166,82 +168,12 @@ export default function OcrSummaryPanel({
   isContinuingGeneration,
   continueGenerationError,
   onContinueGeneration,
+  summary,
+  reviewLevel: propsReviewLevel,
+  error,
 }: OcrSummaryPanelProps) {
-  const [summary, setSummary] = useState<string>('')
-  const [summaryReviewLevel, setSummaryReviewLevel] = useState<ReviewLevel | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [copyError, setCopyError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
-  const [hasFetched, setHasFetched] = useState(false)
-
-  useEffect(() => {
-    if (!jobId) {
-      return
-    }
-
-    let isActive = true
-    let intervalId: number | undefined
-
-    const loadSummary = async (isInitial = false) => {
-      if (!isActive) {
-        return
-      }
-
-      if (isInitial) {
-        setIsLoading(true)
-        setSummary('')
-        setSummaryReviewLevel(null)
-        setError(null)
-        setCopyError(null)
-        setHasFetched(false)
-      }
-
-      try {
-        const data = await getOcrSummary(jobId)
-        if (!isActive) {
-          return
-        }
-        const nextText = data.text ?? ''
-        const nextReviewLevel = data.reviewLevel ?? null
-        if (nextText) {
-          setSummary(nextText)
-          if (intervalId) {
-            window.clearInterval(intervalId)
-          }
-        }
-        setSummaryReviewLevel(nextReviewLevel)
-        setError(null)
-        setHasFetched(true)
-      } catch {
-        if (!isActive) {
-          return
-        }
-        if (status === 'failed') {
-          setError('OCR non disponibile: il job e fallito.')
-          if (intervalId) {
-            window.clearInterval(intervalId)
-          }
-        }
-      } finally {
-        if (isActive && isInitial) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    if (status !== 'failed') {
-      intervalId = window.setInterval(() => loadSummary(false), 3000)
-    }
-    loadSummary(true)
-
-    return () => {
-      isActive = false
-      if (intervalId) {
-        window.clearInterval(intervalId)
-      }
-    }
-  }, [jobId, status])
 
   useEffect(() => {
     if (!copied) {
@@ -258,7 +190,7 @@ export default function OcrSummaryPanel({
     if (status === 'failed') {
       return 'Il riepilogo OCR non e disponibile per un job fallito.'
     }
-    if (status !== 'completed') {
+    if (status !== 'completed' && status !== 'review_required') {
       return 'Il riepilogo sara disponibile appena pronto.'
     }
     return 'Nessun contenuto OCR disponibile.'
@@ -279,18 +211,26 @@ export default function OcrSummaryPanel({
     }
   }
 
-  const visibleSummary = jobId ? summary : ''
-  const visibleLoading = Boolean(jobId) && isLoading && !hasFetched
+  const visibleSummary = jobId ? (summary ?? '') : ''
+  const isOcrActive =
+    Boolean(jobId) &&
+    status !== 'failed' &&
+    status !== 'completed' &&
+    status !== 'review_required' &&
+    !visibleSummary
+  const visibleLoading =
+    Boolean(jobId) &&
+    !visibleSummary &&
+    status !== 'failed' &&
+    status !== 'completed' &&
+    status !== 'review_required'
   const visibleError = jobId ? error : null
-  const reviewLevel = useMemo(
-    () => {
-      if (summaryReviewLevel !== null) {
-        return summaryReviewLevel
-      }
-      return visibleSummary ? getOcrReviewLevel(visibleSummary) : 'none'
-    },
-    [summaryReviewLevel, visibleSummary],
-  )
+  const reviewLevel = useMemo(() => {
+    if (propsReviewLevel !== null && propsReviewLevel !== undefined) {
+      return propsReviewLevel
+    }
+    return visibleSummary ? getOcrReviewLevel(visibleSummary) : 'none'
+  }, [propsReviewLevel, visibleSummary])
   const displaySummary = replaceFinalOutcomeIcon(visibleSummary, reviewLevel)
   const contentClassName = [
     'ocr-panel__content',
@@ -344,7 +284,10 @@ export default function OcrSummaryPanel({
       <div className="page-card">
         <div className="ocr-panel__header">
           <div>
-            <h3>Riepilogo OCR</h3>
+            <h3>
+              {isOcrActive && <span className="spinner" />}
+              Riepilogo OCR
+            </h3>
             <p className="muted">Testo estratto dal documento.</p>
           </div>
           <button
