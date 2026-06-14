@@ -8,9 +8,14 @@ import type { JobArtifact } from '../types/artifacts'
 type JobArtifactsListProps = {
   jobId: string | null
   status: JobStatus | null
+  ocrSummary: string | null
 }
 
-export default function JobArtifactsList({ jobId, status }: JobArtifactsListProps) {
+export default function JobArtifactsList({
+  jobId,
+  status,
+  ocrSummary,
+}: JobArtifactsListProps) {
   const [artifacts, setArtifacts] = useState<JobArtifact[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -80,6 +85,13 @@ export default function JobArtifactsList({ jobId, status }: JobArtifactsListProp
   const visibleError = hasCompletedJob ? error : null
   const visibleDownloadError = hasCompletedJob ? downloadError : null
   const visibleLoading = hasCompletedJob && isLoading
+  const isDocsGenerating =
+    !!jobId &&
+    !!ocrSummary &&
+    status !== 'completed' &&
+    status !== 'failed' &&
+    status !== 'review_required'
+
   const emptyMessage = (() => {
     if (!jobId) {
       return 'Avvia un job per vedere i documenti generati.'
@@ -100,7 +112,10 @@ export default function JobArtifactsList({ jobId, status }: JobArtifactsListProp
     <div className="page-card">
       <div className="artifacts-header">
         <div>
-          <h3>Documenti generati</h3>
+          <h3>
+            {isDocsGenerating && <span className="spinner" />}
+            Documenti generati
+          </h3>
           <p className="muted">Disponibili quando il job e completato.</p>
         </div>
       </div>
