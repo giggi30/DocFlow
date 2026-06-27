@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a71e3312-d878-4d94-9043-65ff95c921ac" name="Changes" comment="refactor: lift OCR summary state and add loading indicators to job components&#10;&#10;- Moved OCR summary state management and polling logic out of `OcrSummaryPanel` to be handled via props.&#10;- Added visual loading spinners to the headers of `OcrSummaryPanel`, `JobArtifactsList`, and `JobStatusCard` when jobs or document generation are active.&#10;- Updated `JobStatusCard` to display &quot;Avvio in corso&quot; during the initial loading phase.&#10;- Adjusted status checks in `OcrSummaryPanel` and `JobArtifactsList` to include the `review_required` state.&#10;- Refined conditional rendering logic for summary text and error messages in the OCR panel.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/archive/documents.json" beforeDir="false" afterPath="$PROJECT_DIR$/archive/documents.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/JobArtifactsList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/JobArtifactsList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/JobStatusCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/JobStatusCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/OcrSummaryPanel.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/OcrSummaryPanel.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/models_registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/models_registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/prompts.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/prompts.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

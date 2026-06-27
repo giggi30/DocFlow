@@ -28,6 +28,16 @@ Strumenti: agente specializzato in data analysis, con tool per l'esecuzione di q
 Azione: monitora i KPI e le metriche di performance in tempo reale.
 Raccomandazione: incrocia i costi estratti dalle fatture, l'affidabilità passata dei corrieri e i tempi di transito per fornire raccomandazioni sulle rotte e sui vettori da usare.
 
+## Struttura del progetto
+
+- `backend/`: Contiene le API FastAPI, il core del progetto e i workflow LangGraph (agenti, nodi e logica di elaborazione).
+- `frontend/`: Contiene l'interfaccia utente React/Vite per la dashboard, il caricamento dei file e l'interazione con il sistema.
+- `allegati/`: Cartella destinata a ospitare file di esempio o allegati di supporto (Replication Package).
+- `archive/`: Archivio utilizzato per memorizzare i documenti già processati o storici.
+- `test_output/`: Cartella di destinazione per i file generati durante i test del sistema (es. autofatture Excel, documenti Word).
+- `uploads/`: Cartella temporanea in cui vengono salvati i file caricati dall'utente prima dell'elaborazione.
+- `.agents/`: Contiene le customizzazioni e le skill specifiche per il framework degli agenti.
+
 ## Avvio locale
 
 ### Prerequisiti

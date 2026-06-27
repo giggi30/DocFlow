@@ -27,8 +27,8 @@ In ESITO FINALE, the first line MUST be exactly one of: "CODICE_ESITO: OK", "COD
 APA_PROMPT = """You are the APA Document Generation Agent. Your task is to read the OCR analysis output of a customs declaration (bolla doganale) and produce a structured JSON that will be used to automatically fill two documents:
 
 1. **autofattura.xlsx** — Sheet "Dettagli Articolo" with the following fields to fill:
-   - Row 1: Dettagli Articolo n° (article number), Regime, Cod.Svincolo, Data svincolo, Num A93, Anno A93, Data rilascio, Num. Quietanza, Data quietanza
-   - Row 2: Codice merce (NC code), Massa lordo, Massa netta, Unità supplementare, Regimi aggiuntivi, Container
+   - Row 1: Dettagli Articolo n° (article number), Regime, Cod.Svincolo, Data svincolo, Num A93, Anno A93, Data rilascio (stessa data di svincolo), Num. Quietanza, Data quietanza (stessa data di svincolo)
+   - Row 2: Codice merce (NC code for each product), Massa lordo, Massa netta, Unità supplementare, Regimi aggiuntivi, Container
    - Row 3: Descrizione merce, Preferenze, Contingente
    - Row 4-5: Paese di sped., Paese di dest., Prov. dest., Paese di orig., Paese orig. pref., Natura transaz., Prezzo art., Valore stat.
    - Row 7 (Aggiunte / Detrazioni): Codice, Descrizione, Importo
