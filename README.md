@@ -32,7 +32,7 @@ Raccomandazione: incrocia i costi estratti dalle fatture, l'affidabilità passat
 
 - `backend/`: Contiene le API FastAPI, il core del progetto e i workflow LangGraph (agenti, nodi e logica di elaborazione).
 - `frontend/`: Contiene l'interfaccia utente React/Vite per la dashboard, il caricamento dei file e l'interazione con il sistema.
-- `allegati/`: Cartella destinata a ospitare file di esempio o allegati di supporto (Replication Package).
+- `dataset/`: Cartella destinata a ospitare file di template o allegati di supporto.
 - `archive/`: Archivio utilizzato per memorizzare i documenti già processati o storici.
 - `test_output/`: Cartella di destinazione per i file generati durante i test del sistema (es. autofatture Excel, documenti Word).
 - `uploads/`: Cartella temporanea in cui vengono salvati i file caricati dall'utente prima dell'elaborazione.

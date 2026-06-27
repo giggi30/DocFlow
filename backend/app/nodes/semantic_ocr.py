@@ -197,7 +197,7 @@ def semantic_ocr_node(state: AgentState) -> Command[Literal["apa_document_genera
     """Extracts data from unstructured PDF using a multimodal LLM or standard text LLM with PDF parsing."""
     model = get_chat_model("semantic_ocr", temperature=0.1)
 
-    pdf_path = state.get("raw_document_path", "allegati/Allegato1_Gemini.pdf")
+    pdf_path = state.get("raw_document_path", "dataset/Allegato1_Gemini.pdf")
 
     # The documents are scanned handwritten PDFs, so vision input is the primary path.
     image_data_urls: list[str] = _pdf_pages_to_data_urls(pdf_path)

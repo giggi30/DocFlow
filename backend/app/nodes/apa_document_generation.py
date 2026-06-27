@@ -33,8 +33,8 @@ RETRY_DELAY_SECONDS = 5
 # ---------------------------------------------------------------------------
 DEFAULT_OUTPUT_DIR = "test_output"
 DEFAULT_OCR_OUTPUT_PATH = os.path.join(DEFAULT_OUTPUT_DIR, "ocr_output.txt")
-AUTOFATTURA_TEMPLATE = "allegati/autofattura.xlsx"
-AUTODICHIARAZIONE_TEMPLATE = "allegati/autodichiarazione_riordinata.docx"
+AUTOFATTURA_TEMPLATE = "dataset/autofattura.xlsx"
+AUTODICHIARAZIONE_TEMPLATE = "dataset/autodichiarazione_riordinata.docx"
 
 GENERIC_SOURCE_NAME_TOKENS = {
     "bolla",
