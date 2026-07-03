@@ -282,6 +282,116 @@
           "jobId": "job_f84d429586",
           "filename": "autodichiarazione_google_gemini_srl.docx",
           "path": "test_output/job_f84d429586/autodichiarazione_google_gemini_srl.docx"
+        },
+        {
+          "jobId": "job_10691979e7",
+          "filename": "autofattura_digitale_senza_errori.xlsx",
+          "path": "test_output/job_10691979e7/autofattura_digitale_senza_errori.xlsx"
+        },
+        {
+          "jobId": "job_10691979e7",
+          "filename": "autodichiarazione_digitale_senza_errori.docx",
+          "path": "test_output/job_10691979e7/autodichiarazione_digitale_senza_errori.docx"
+        },
+        {
+          "jobId": "job_ec999a5e62",
+          "filename": "autofattura_digitale_con_errori.xlsx",
+          "path": "test_output/job_ec999a5e62/autofattura_digitale_con_errori.xlsx"
+        },
+        {
+          "jobId": "job_ec999a5e62",
+          "filename": "autodichiarazione_digitale_con_errori.docx",
+          "path": "test_output/job_ec999a5e62/autodichiarazione_digitale_con_errori.docx"
+        },
+        {
+          "jobId": "job_121539c877",
+          "filename": "autofattura_tech_node_solutions_srl.xlsx",
+          "path": "test_output/job_121539c877/autofattura_tech_node_solutions_srl.xlsx"
+        },
+        {
+          "jobId": "job_121539c877",
+          "filename": "autodichiarazione_tech_node_solutions_srl.docx",
+          "path": "test_output/job_121539c877/autodichiarazione_tech_node_solutions_srl.docx"
+        },
+        {
+          "jobId": "job_acd06642be",
+          "filename": "autofattura_4_manuale_con_dati_errati.xlsx",
+          "path": "test_output/job_acd06642be/autofattura_4_manuale_con_dati_errati.xlsx"
+        },
+        {
+          "jobId": "job_acd06642be",
+          "filename": "autodichiarazione_4_manuale_con_dati_errati.docx",
+          "path": "test_output/job_acd06642be/autodichiarazione_4_manuale_con_dati_errati.docx"
+        },
+        {
+          "jobId": "job_9a22d7ab5a",
+          "filename": "autofattura_tech_node_solutions_srl.xlsx",
+          "path": "test_output/job_9a22d7ab5a/autofattura_tech_node_solutions_srl.xlsx"
+        },
+        {
+          "jobId": "job_9a22d7ab5a",
+          "filename": "autodichiarazione_tech_node_solutions_srl.docx",
+          "path": "test_output/job_9a22d7ab5a/autodichiarazione_tech_node_solutions_srl.docx"
+        },
+        {
+          "jobId": "job_fc3eb1109f",
+          "filename": "autofattura_8_digitale_senza_errori.xlsx",
+          "path": "test_output/job_fc3eb1109f/autofattura_8_digitale_senza_errori.xlsx"
+        },
+        {
+          "jobId": "job_fc3eb1109f",
+          "filename": "autodichiarazione_8_digitale_senza_errori.docx",
+          "path": "test_output/job_fc3eb1109f/autodichiarazione_8_digitale_senza_errori.docx"
+        },
+        {
+          "jobId": "job_99e9cbb1a9",
+          "filename": "autofattura_9_digitale_con_errori.xlsx",
+          "path": "test_output/job_99e9cbb1a9/autofattura_9_digitale_con_errori.xlsx"
+        },
+        {
+          "jobId": "job_99e9cbb1a9",
+          "filename": "autodichiarazione_9_digitale_con_errori.docx",
+          "path": "test_output/job_99e9cbb1a9/autodichiarazione_9_digitale_con_errori.docx"
+        },
+        {
+          "jobId": "job_15bb5d6e38",
+          "filename": "autofattura_9_digitale_con_errori.xlsx",
+          "path": "test_output/job_15bb5d6e38/autofattura_9_digitale_con_errori.xlsx"
+        },
+        {
+          "jobId": "job_15bb5d6e38",
+          "filename": "autodichiarazione_9_digitale_con_errori.docx",
+          "path": "test_output/job_15bb5d6e38/autodichiarazione_9_digitale_con_errori.docx"
+        },
+        {
+          "jobId": "job_4d5774bded",
+          "filename": "autofattura_10_digitale_senza_errori.xlsx",
+          "path": "test_output/job_4d5774bded/autofattura_10_digitale_senza_errori.xlsx"
+        },
+        {
+          "jobId": "job_4d5774bded",
+          "filename": "autodichiarazione_10_digitale_senza_errori.docx",
+          "path": "test_output/job_4d5774bded/autodichiarazione_10_digitale_senza_errori.docx"
+        },
+        {
+          "jobId": "job_63f44c1a12",
+          "filename": "autofattura_tech_import_srl.xlsx",
+          "path": "test_output/job_63f44c1a12/autofattura_tech_import_srl.xlsx"
+        },
+        {
+          "jobId": "job_63f44c1a12",
+          "filename": "autodichiarazione_tech_import_srl.docx",
+          "path": "test_output/job_63f44c1a12/autodichiarazione_tech_import_srl.docx"
+        },
+        {
+          "jobId": "job_186f518c14",
+          "filename": "autofattura_digitale_con_errori.xlsx",
+          "path": "test_output/job_186f518c14/autofattura_digitale_con_errori.xlsx"
+        },
+        {
+          "jobId": "job_186f518c14",
+          "filename": "autodichiarazione_digitale_con_errori.docx",
+          "path": "test_output/job_186f518c14/autodichiarazione_digitale_con_errori.docx"
         }
       ]
     },

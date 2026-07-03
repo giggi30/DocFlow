@@ -27,14 +27,14 @@ In ESITO FINALE, the first line MUST be exactly one of: "CODICE_ESITO: OK", "COD
 APA_PROMPT = """You are the APA Document Generation Agent. Your task is to read the OCR analysis output of a customs declaration (bolla doganale) and produce a structured JSON that will be used to automatically fill two documents:
 
 1. **autofattura.xlsx** — Sheet "Dettagli Articolo" with the following fields to fill:
-   - Row 1: Dettagli Articolo n° (article number), Regime, Cod.Svincolo, Data svincolo, Num A93, Anno A93, Data rilascio (stessa data di svincolo), Num. Quietanza, Data quietanza (stessa data di svincolo)
+   - Row 1: Dettagli Articolo n° (article number), Regime, Cod.Svincolo (MRN from bolla doganale), Data svincolo, Num A93, Anno A93, Data rilascio (stessa data di svincolo), Num. Quietanza, Data quietanza (stessa data di svincolo)
    - Row 2: Codice merce (NC code for each product), Massa lordo, Massa netta, Unità supplementare, Regimi aggiuntivi, Container
    - Row 3: Descrizione merce, Preferenze, Contingente
    - Row 4-5: Paese di sped., Paese di dest., Prov. dest., Paese di orig., Paese orig. pref., Natura transaz., Prezzo art., Valore stat.
    - Row 7 (Aggiunte / Detrazioni): Codice, Descrizione, Importo
    - Row 9 (Liquidazione / Tributi): for EACH tax line (A00, 620, IVA22) → Tributo, Imponibile, Quantità, Unità di misura, Aliquota, Importo, Metodo pag.
    - Row 11 (Scarichi): for EACH discharge/unloading entry → Tipo (e.g. "Scarico magazzino"), Riferimento, Art., Num. imb., Quantità, Unità
-   - Row 13 (Documenti): Codice, Identificativo, Data, Uni.Mis., Quantità, Codice valuta, Importo
+   - Row 13 (Documenti): Codice, Identificativo, Data, Uni.Mis., Quantità, Codice valuta, Importo (Valore statistico + CIF)
    - Row 15 (Colli): Tipo imb., Numero imb., Marchi spedizione
 
 2. **autodichiarazione_riordinata.docx** — Word document with blanks (represented by multiple underscores, e.g. "__________").
@@ -46,6 +46,7 @@ APA_PROMPT = """You are the APA Document Generation Agent. Your task is to read 
 - Carefully analyze the provided OCR output. Extract ONLY data that is actually present in the text; if a field is not available use "N/D" (for the autofattura) or "Da compilare" (for the autodichiarazione).
 - For the autofattura tax lines, create an array with one object per tax line (A00, 620, IVA22, etc.).
 - All monetary amounts must be strings using the comma as decimal separator (e.g. "26.200,00").
+- in the autofattura, don't forget the final "importo" field in the "documenti" section, which is the sum of the "valore_stat" and any applicable CIF costs.
 - You will also receive the SOURCE PDF FILENAME. Infer the company name for output file naming only from that filename: remove generic customs-document prefixes such as "bolla_doganale", "dichiarazione_doganale", "customs_declaration", remove the ".pdf" extension, lowercase the result, normalize legal suffixes such as "s.r.l." to "srl", and use underscores between words.
 - If the company name is written as a run-on token, split it into meaningful company-name words when obvious. Example: "bolla_doganale_technodesolutions_srl.pdf" must produce "technode_solutions_srl".
 - The "source_pdf_company_slug" value must contain only lowercase letters, numbers, and underscores. Do not include "autofattura", "autodichiarazione", "bolla", "doganale", or the file extension in this value.
