@@ -10,7 +10,7 @@
         },
         {
           "jobId": "job_2130ffb6e2",
-          "filename": "autodichiarazione_google_gemini_srl.docx",
+          "filename": "autodichiarazione_google_\u00f9gemini_srl.docx",
           "path": "test_output/job_2130ffb6e2/autodichiarazione_google_gemini_srl.docx"
         },
         {
@@ -392,6 +392,46 @@
           "jobId": "job_186f518c14",
           "filename": "autodichiarazione_digitale_con_errori.docx",
           "path": "test_output/job_186f518c14/autodichiarazione_digitale_con_errori.docx"
+        },
+        {
+          "jobId": "job_ebb381696b",
+          "filename": "autofattura_google_gemini_srl.xlsx",
+          "path": "test_output/job_ebb381696b/autofattura_google_gemini_srl.xlsx"
+        },
+        {
+          "jobId": "job_ebb381696b",
+          "filename": "autodichiarazione_google_gemini_srl.docx",
+          "path": "test_output/job_ebb381696b/autodichiarazione_google_gemini_srl.docx"
+        },
+        {
+          "jobId": "job_69edf20d15",
+          "filename": "autofattura_10_digitale_senza_errori.xlsx",
+          "path": "test_output/job_69edf20d15/autofattura_10_digitale_senza_errori.xlsx"
+        },
+        {
+          "jobId": "job_69edf20d15",
+          "filename": "autodichiarazione_10_digitale_senza_errori.docx",
+          "path": "test_output/job_69edf20d15/autodichiarazione_10_digitale_senza_errori.docx"
+        },
+        {
+          "jobId": "job_62bb99baae",
+          "filename": "autofattura_unknown.xlsx",
+          "path": "test_output/job_62bb99baae/autofattura_unknown.xlsx"
+        },
+        {
+          "jobId": "job_62bb99baae",
+          "filename": "autodichiarazione_unknown.docx",
+          "path": "test_output/job_62bb99baae/autodichiarazione_unknown.docx"
+        },
+        {
+          "jobId": "job_ecea307886",
+          "filename": "autofattura_tech_import_srl.xlsx",
+          "path": "test_output/job_ecea307886/autofattura_tech_import_srl.xlsx"
+        },
+        {
+          "jobId": "job_ecea307886",
+          "filename": "autodichiarazione_tech_import_srl.docx",
+          "path": "test_output/job_ecea307886/autodichiarazione_tech_import_srl.docx"
         }
       ]
     },
@@ -437,6 +477,31 @@
           "jobId": "job_b66b35f374",
           "filename": "autodichiarazione_perplexity.docx",
           "path": "test_output/job_b66b35f374/autodichiarazione_perplexity.docx"
+        }
+      ]
+    },
+    "436ff591fd604db7": {
+      "companyName": "Unimol Termoli srl",
+      "documents": [
+        {
+          "jobId": "job_53bb32c640",
+          "filename": "autofattura_10_digitale_senza_errori.xlsx",
+          "path": "test_output/job_53bb32c640/autofattura_10_digitale_senza_errori.xlsx"
+        },
+        {
+          "jobId": "job_53bb32c640",
+          "filename": "autodichiarazione_10_digitale_senza_errori.docx",
+          "path": "test_output/job_53bb32c640/autodichiarazione_10_digitale_senza_errori.docx"
+        },
+        {
+          "jobId": "job_f95c66d833",
+          "filename": "autofattura_tech_import_srl.xlsx",
+          "path": "test_output/job_f95c66d833/autofattura_tech_import_srl.xlsx"
+        },
+        {
+          "jobId": "job_f95c66d833",
+          "filename": "autodichiarazione_tech_import_srl.docx",
+          "path": "test_output/job_f95c66d833/autodichiarazione_tech_import_srl.docx"
         }
       ]
     }

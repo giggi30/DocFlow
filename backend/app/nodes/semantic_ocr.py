@@ -36,43 +36,7 @@ SECTION_EMOJIS = {
 
 ReviewLevel = Literal["none", "warning", "error"]
 
-
-REVIEW_WARNING_PATTERNS = (
-    r"\bdiscrepanz",
-    r"\bincongruen",
-    r"\bincoeren",
-    r"\banomali",
-    r"\berror",
-    r"\bdifferenz",
-    r"\bscostament",
-    r"\bmancant",
-    r"\bassent",
-    r"\bnon\s+(coincide|corrisponde|risulta|torn)",
-    r"\bda\s+(verificare|rivedere|revisionare)",
-    r"\brichiede\s+(verifica|revisione)",
-    r"\bimpossibile\s+verificare",
-)
-
 REVIEW_CODE_PATTERN = r"\bcodice[_\s-]*esito\s*[:\-]\s*(ok|warning|error|errore)\b"
-
-MINOR_CIF_PATTERNS = (
-    r"\bcif\b",
-    r"\bnolo\b",
-    r"\bassicuraz",
-    r"\btrasport",
-    r"\bfreight\b",
-    r"\binsurance\b",
-)
-
-REASSURING_PATTERNS = (
-    r"\bnessun[ao]?\s+discrepanz",
-    r"\bsenza\s+discrepanz",
-    r"\bnon\s+(sono\s+state\s+)?rilevat[ei]\s+discrepanz",
-    r"\bnon\s+emergono\s+discrepanz",
-    r"\bnessun[ao]?\s+errore",
-    r"\bdati\s+coerenti",
-    r"\bcalcoli\s+coerenti",
-)
 
 
 def _clean_section_title(line: str) -> str:
@@ -80,39 +44,6 @@ def _clean_section_title(line: str) -> str:
     clean = re.sub(r"^[^\w]+", "", clean, flags=re.UNICODE)
     clean = re.sub(r"\s+", " ", clean).strip()
     return clean.upper().rstrip(":")
-
-
-def _section_lines(text: str, section_title: str) -> list[str]:
-    section_lines: list[str] = []
-    in_section = False
-    known_sections = {*SECTION_EMOJIS.keys(), "ESITO FINALE"}
-
-    for line in text.splitlines():
-        clean_title = _clean_section_title(line)
-        if clean_title == section_title:
-            in_section = True
-            continue
-        if in_section and clean_title in known_sections:
-            break
-        if in_section:
-            section_lines.append(line)
-
-    return section_lines
-
-
-def _has_review_signal(line: str) -> bool:
-    clean = line.lower()
-    return any(re.search(pattern, clean) for pattern in REVIEW_WARNING_PATTERNS)
-
-
-def _is_reassuring(line: str) -> bool:
-    clean = line.lower()
-    return any(re.search(pattern, clean) for pattern in REASSURING_PATTERNS)
-
-
-def _is_minor_cif_signal(line: str) -> bool:
-    clean = line.lower()
-    return any(re.search(pattern, clean) for pattern in MINOR_CIF_PATTERNS)
 
 
 def _review_level_from_code(text: str) -> ReviewLevel | None:
@@ -130,27 +61,12 @@ def _review_level_from_code(text: str) -> ReviewLevel | None:
 
 
 def _ocr_review_level(text: str) -> ReviewLevel:
+    # Si fida esclusivamente del codice esplicito generato dall'LLM
     coded = _review_level_from_code(text)
     if coded is not None:
         return coded
-
-    final_outcome = _section_lines(text, "ESITO FINALE")
-    final_text = "\n".join(final_outcome).lower()
-
-    if final_text:
-        has_reassuring = any(_is_reassuring(line) for line in final_outcome)
-        if re.search(r"\berrore\b|\berror\b|‼|❗|!!!", final_text) and not has_reassuring:
-            return "error"
-        if re.search(r"\bwarning\b|\bavvis[oi]\b|\battenzion", final_text):
-            return "warning"
-        for line in final_outcome:
-            if _has_review_signal(line) and not _is_reassuring(line):
-                return "warning" if _is_minor_cif_signal(line) else "error"
-
-    for line in text.splitlines():
-        if _has_review_signal(line) and not _is_reassuring(line):
-            return "warning"
-
+    
+    # Fallback sicuro se l'LLM dimentica il codice ma il processo deve continuare
     return "none"
 
 
@@ -259,5 +175,5 @@ def semantic_ocr_node(state: AgentState) -> Command[Literal["apa_document_genera
                 f"semantic_ocr input mode: vision-only ({len(image_data_urls)} pages)",
             ]
         },
-        goto="apa_document_generation"  # Passa i dati OCR all'agente APA per generazione documenti
+        goto="apa_document_generation"
     )

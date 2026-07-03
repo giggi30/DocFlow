@@ -54,7 +54,12 @@ export default function JobStatusCard({ jobId, status, isLoading, error }: JobSt
           <h3>Stato job</h3>
           <p className="muted">Aggiornato ogni 3 secondi finche non termina.</p>
         </div>
-        <span className={statusClass}>{isLoading ? 'Caricamento' : statusLabel}</span>
+        <span className={statusClass}>
+          {(isLoading || currentStatus === 'running' || currentStatus === 'queued') && (
+            <span className="spinner" aria-hidden="true" />
+          )}
+          {isLoading ? 'Caricamento' : statusLabel}
+        </span>
       </div>
       <div className="status-card__grid">
         <div>

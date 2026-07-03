@@ -104,7 +104,12 @@ export default function JobArtifactsList({ jobId, status }: JobArtifactsListProp
           <p className="muted">Disponibili quando il job e completato.</p>
         </div>
       </div>
-      {visibleLoading && <p className="muted">Caricamento documenti...</p>}
+      {visibleLoading && (
+        <p className="muted">
+          <span className="spinner" aria-hidden="true" style={{ marginRight: '8px' }} />
+          Caricamento documenti...
+        </p>
+      )}
       {visibleError && <p className="error-text">{visibleError}</p>}
       {visibleDownloadError && (
         <p className="error-text">{visibleDownloadError}</p>
@@ -113,6 +118,11 @@ export default function JobArtifactsList({ jobId, status }: JobArtifactsListProp
         <div className="artifacts-list">
           {visibleArtifacts.length === 0 ? (
             <div className="empty-state">
+              {(status === 'running' || status === 'queued') && (
+                <div style={{ marginBottom: '12px' }}>
+                  <span className="spinner spinner--md" aria-hidden="true" />
+                </div>
+              )}
               <p className="empty-state__title">Documenti non disponibili</p>
               <p className="muted">{emptyMessage}</p>
             </div>
