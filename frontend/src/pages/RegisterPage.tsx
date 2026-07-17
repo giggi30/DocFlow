@@ -1,6 +1,7 @@
 import { type FormEvent, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
+import logo from '../assets/icon.png'
 
 const defaultErrorMessage = 'Registrazione fallita. Verifica i dati.'
 
@@ -51,67 +52,81 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="login-shell">
-      <div className="login-card">
-        <div className="login-header">
-          <span className="login-eyebrow">DocFlow</span>
-          <h1>Crea il tuo account</h1>
-          <p>Inserisci i dati aziendali per attivare la dashboard.</p>
+    <div className="auth-page auth-page--register">
+      <div className="auth-page__brand">
+        <img className="auth-page__logo" src={logo} alt="Gestionale Doganale" />
+        <span className="auth-page__name">DocFlow</span>
+      </div>
+
+      <div className="auth-copy">
+        <span className="auth-kicker">Attivazione account aziendale</span>
+        <h1>Onboarding rapido, accesso ordinato, zero frizione.</h1>
+        <p>Attiva il tuo spazio di lavoro e inizia a gestire documenti e pratiche in modo semplice.</p>
+      </div>
+
+      <div className="login-shell">
+        <div className="login-card">
+          <div className="login-header">
+            <h2>Crea il tuo account</h2>
+            <p>Inserisci i dati aziendali per attivare la dashboard.</p>
+          </div>
+
+          <form className="login-form" onSubmit={handleSubmit}>
+            <div className="login-field">
+              <label htmlFor="register-company">Nome azienda</label>
+              <input
+                id="register-company"
+                type="text"
+                name="companyName"
+                autoComplete="organization"
+                value={companyName}
+                onChange={(event) => setCompanyName(event.target.value)}
+                placeholder="Azienda Srl"
+                required
+              />
+            </div>
+
+            <div className="login-field">
+              <label htmlFor="register-email">Email</label>
+              <input
+                id="register-email"
+                type="email"
+                name="email"
+                autoComplete="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="nome@azienda.it"
+                required
+              />
+            </div>
+
+            <div className="login-field">
+              <label htmlFor="register-password">Password</label>
+              <input
+                id="register-password"
+                type="password"
+                name="password"
+                autoComplete="new-password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="Password"
+                required
+              />
+            </div>
+
+            {error && <p className="error-text">{error}</p>}
+
+            <div className="login-actions">
+              <button className="button-primary" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Registrazione in corso...' : 'Registrati'}
+              </button>
+            </div>
+          </form>
+
+          <p className="login-footer">
+            Hai gia un account? <Link to="/login">Accedi</Link>
+          </p>
         </div>
-        <form className="login-form" onSubmit={handleSubmit}>
-          <div className="login-field">
-            <label htmlFor="register-company">Nome azienda</label>
-            <input
-              id="register-company"
-              type="text"
-              name="companyName"
-              autoComplete="organization"
-              value={companyName}
-              onChange={(event) => setCompanyName(event.target.value)}
-              placeholder="Azienda Srl"
-              required
-            />
-          </div>
-          <div className="login-field">
-            <label htmlFor="register-email">Email</label>
-            <input
-              id="register-email"
-              type="email"
-              name="email"
-              autoComplete="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="nome@azienda.it"
-              required
-            />
-          </div>
-          <div className="login-field">
-            <label htmlFor="register-password">Password</label>
-            <input
-              id="register-password"
-              type="password"
-              name="password"
-              autoComplete="new-password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="Password"
-              required
-            />
-          </div>
-          {error && <p className="error-text">{error}</p>}
-          <div className="login-actions">
-            <button
-              className="button-primary"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Registrazione in corso...' : 'Registrati'}
-            </button>
-          </div>
-        </form>
-        <p className="login-footer">
-          Hai gia un account? <Link to="/login">Accedi</Link>
-        </p>
       </div>
     </div>
   )

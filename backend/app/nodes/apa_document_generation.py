@@ -487,9 +487,8 @@ def _invoke_with_retry(model, messages: list) -> "AIMessage":
     """Invoke the LLM with retry logic for transient API errors.
     
     OpenRouter can return truncated/invalid HTTP response bodies (especially
-    with Qwen thinking-mode models), causing JSONDecodeError inside the OpenAI
-    client before our code even sees the response.  This wrapper retries on
-    such transient failures.
+    with Qwen thinking-mode models). This wrapper retries on such transient
+    failures before the node gives up.
     """
     last_error = None
     for attempt in range(1, MAX_INVOKE_RETRIES + 1):

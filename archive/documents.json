@@ -504,6 +504,61 @@
           "path": "test_output/job_f95c66d833/autodichiarazione_tech_import_srl.docx"
         }
       ]
+    },
+    "47646090b62c17f8": {
+      "companyName": "Unimol Termoli srl",
+      "documents": [
+        {
+          "jobId": "job_aa74752296",
+          "filename": "autofattura_google_gemini_srl.xlsx",
+          "path": "test_output/job_aa74752296/autofattura_google_gemini_srl.xlsx"
+        },
+        {
+          "jobId": "job_aa74752296",
+          "filename": "autodichiarazione_google_gemini_srl.docx",
+          "path": "test_output/job_aa74752296/autodichiarazione_google_gemini_srl.docx"
+        },
+        {
+          "jobId": "job_a92aea9a17",
+          "filename": "autofattura_con_errori_gemini.xlsx",
+          "path": "test_output/job_a92aea9a17/autofattura_con_errori_gemini.xlsx"
+        },
+        {
+          "jobId": "job_a92aea9a17",
+          "filename": "autodichiarazione_con_errori_gemini.docx",
+          "path": "test_output/job_a92aea9a17/autodichiarazione_con_errori_gemini.docx"
+        },
+        {
+          "jobId": "job_311aefc27a",
+          "filename": "autofattura_allegato1_perplexity.xlsx",
+          "path": "test_output/job_311aefc27a/autofattura_allegato1_perplexity.xlsx"
+        },
+        {
+          "jobId": "job_311aefc27a",
+          "filename": "autodichiarazione_allegato1_perplexity.docx",
+          "path": "test_output/job_311aefc27a/autodichiarazione_allegato1_perplexity.docx"
+        },
+        {
+          "jobId": "job_dae08b3e23",
+          "filename": "autofattura_chatgpt.xlsx",
+          "path": "test_output/job_dae08b3e23/autofattura_chatgpt.xlsx"
+        },
+        {
+          "jobId": "job_dae08b3e23",
+          "filename": "autodichiarazione_chatgpt.docx",
+          "path": "test_output/job_dae08b3e23/autodichiarazione_chatgpt.docx"
+        },
+        {
+          "jobId": "job_fe799a2de8",
+          "filename": "autofattura_chatgpt.xlsx",
+          "path": "test_output/job_fe799a2de8/autofattura_chatgpt.xlsx"
+        },
+        {
+          "jobId": "job_fe799a2de8",
+          "filename": "autodichiarazione_chatgpt.docx",
+          "path": "test_output/job_fe799a2de8/autodichiarazione_chatgpt.docx"
+        }
+      ]
     }
   }
 }

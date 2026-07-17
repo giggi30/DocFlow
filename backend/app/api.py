@@ -336,13 +336,7 @@ def _extract_bearer_token(authorization: str | None) -> str:
 
 def _company_name_for_token(settings, token: str) -> str | None:
   company_name = get_company_name_by_token(token)
-  if company_name:
-    return company_name
-  if token == settings.auth_demo_token:
-    return settings.auth_company_name
-  if token == settings.auth_demo_token_secondary:
-    return settings.auth_company_name_secondary
-  return None
+  return company_name
 
 
 def _match_account_by_credentials(
@@ -350,17 +344,7 @@ def _match_account_by_credentials(
   email: str,
   password: str,
 ) -> tuple[str, str] | None:
-  match = verify_user(email, password)
-  if match:
-    return match
-  if email == settings.auth_demo_email and password == settings.auth_demo_password:
-    return settings.auth_demo_token, settings.auth_company_name
-  if (
-    email == settings.auth_demo_email_secondary
-    and password == settings.auth_demo_password_secondary
-  ):
-    return settings.auth_demo_token_secondary, settings.auth_company_name_secondary
-  return None
+  return verify_user(email, password)
 
 
 def _require_auth(authorization: str | None) -> AccountContext:

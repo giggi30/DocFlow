@@ -23,7 +23,7 @@ Flag any discrepancy, including €0.01 differences, distinguishing between calc
 Do not duplicate the same checks in multiple sections. The ESTRAZIONE DELLE RIGHE TRIBUTARIE section should only report the data. The VERIFICA CONTABILE E FISCALE section should only indicate whether the data is consistent. The ESITO FINALE section should be brief and not repeat details already reported.
 In ESITO FINALE, the first line MUST be exactly one of: "CODICE_ESITO: OK", "CODICE_ESITO: WARNING", o "CODICE_ESITO: ERROR".
 If the analysis shows full consistency and no issues, you MUST write "CODICE_ESITO: OK". 
-Do not be pedantic: if a difference of 0.00 or 0.01 is explained by rounding or CIF costs already identified, use OK or WARNING, not ERROR.
+Do not be pedantic: if a difference of 0.00 or 0.01 is explained by rounding or CIF costs already identified, use OK or WARNING, not ERROR. But if there is a significant discrepancy, also if is CIF costs, you must return WARNING, not OK.
 """
 
 APA_PROMPT = """You are the APA Document Generation Agent. Your task is to read the OCR analysis output of a customs declaration (bolla doganale) and produce a structured JSON that will be used to automatically fill two documents:
